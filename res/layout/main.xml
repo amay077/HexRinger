@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >
+	<LinearLayout
+		android:id="@+id/LayoutMain"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:orientation="vertical"
+		>
+		<com.google.android.maps.MapView
+			android:id="@+id/mapView"
+			android:apiKey="0ZXUMl6hWC1_ViF-f_AX2FHO_lGeksMVENsdMVQ"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:clickable="true"
+			/>
+	</LinearLayout>
+	<LinearLayout
+		android:id="@+id/LayoutFotter"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		>
+			<Button
+				android:id="@+id/ButtonStartMonitoring"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal|center_vertical"
+				android:text="Start Monitoring"
+				/>
+			<Button
+				android:id="@+id/ButtonStopMonitoring"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal|center_vertical"
+				android:text="Stop Monitoring"
+				/>
+	</LinearLayout>
+</LinearLayout>
