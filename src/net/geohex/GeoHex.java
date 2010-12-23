@@ -4,9 +4,15 @@ package net.geohex;
  * GeoHex by @sa2da (http://geogames.net) is licensed under Creative Commons BY-SA 2.1 Japan License.
  * GeoHex V2 for Java implemented by @chshii is licensed under Creative Commons BY-SA 2.1 Japan License.
  */
- 
+
 import java.util.List;
 import java.util.Vector;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 public class GeoHex {
@@ -141,6 +147,24 @@ public class GeoHex {
 			}
 
 			return zones;
+		}
+
+		public boolean intersects(double x, double y, double radius) {
+			GeometryFactory geomFactory = new GeometryFactory();
+
+			List<Coordinate> coords = new Vector<Coordinate>();
+			Loc[] locations = this.getHexCoords();
+			for (Loc loc : locations) {
+				coords.add(new Coordinate(loc.lon, loc.lat));
+			}
+			// close ring
+			coords.add(new Coordinate(locations[0].lon, locations[0].lat));
+
+			Polygon hexPolygon = geomFactory.createPolygon(geomFactory.createLinearRing((Coordinate[])coords.toArray()), null);
+			Point point = geomFactory.createPoint(new Coordinate(x, y));
+			Geometry bufferedPoint = point.buffer(radius);
+
+			return hexPolygon.intersects(bufferedPoint);
 		}
 	}
 
