@@ -23,6 +23,83 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 	private SharedPreferences preference = null;
 	private String lastHex = null;
 	private AudioManager audioMan = null;
+	private LocationManager locaMan = null;
+
+	private LocationListener locListner = new LocationListener() {
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) { }
+		@Override
+		public void onProviderEnabled(String provider) { }
+		@Override
+		public void onProviderDisabled(String provider) { }
+
+		@Override
+		public void onLocationChanged(Location location) {
+			StringBuilder builder = new StringBuilder();
+
+			builder.append(location.getLatitude());
+			builder.append(",");
+			builder.append(location.getLongitude());
+			builder.append(",");
+			builder.append(location.getAltitude());
+			builder.append(",");
+			builder.append(location.getAccuracy());
+			builder.append(",");
+			builder.append(location.getTime());
+
+			Log.d(location.getProvider(), builder.toString());
+
+			// Valid location (WiFi location big changes, Hardware bug, etc...)
+			// if (!vaildLocation()) return;
+
+//			// Get hit hexes in current location and accuracy, order by nearby
+//			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(geoHexes, location);
+//			String hitHex = hitHexes.length > 0 ? hitHexes[0].code : null;
+//
+//			if (lastHex == null) {
+//				if (hitHex == null) {
+//					// Out to out. Do nothing.
+//				} else {
+//					// Out to in. Enter.
+//					enterHex(hitHex);
+//				}
+//			} else {
+//				if (lastHex == hitHex) {
+//					// In to in. Do nothing.
+//				} else if (hitHex == null) {
+//					// In to out. Leave.
+//					leaveHex(lastHex);
+//				} else {
+//					// Hex内→Hex外→別Hex内
+//					// In -> out -> in other hex. Leave and enter.
+//					leaveAndEnterHex(lastHex, hitHex);
+//				}
+//			}
+		}
+
+		private void enterHex(String hitHex) {
+			audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+			writeLastHexToPreference(hitHex);
+		}
+		private void leaveHex(String lastHex) {
+			audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+			writeLastHexToPreference(null);
+		}
+		private void leaveAndEnterHex(String lastHex, String hitHex) {
+			audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+			writeLastHexToPreference(hitHex);
+		}
+
+		private void writeLastHexToPreference(String hitHex) {
+			Editor editor = preference.edit();
+			if (hitHex == null) {
+				editor.remove(Const.PREF_KEY_LAST_HEX);
+			} else {
+				editor.putString(Const.PREF_KEY_LAST_HEX, hitHex);
+			}
+			editor.commit();
+		}
+	};
 
 
 	/**
@@ -70,69 +147,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 	}
 
 	private void startAreaCheck(Context context, final String[] geoHexes) {
-		final LocationManager locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-		locaMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5000, new LocationListener() {
-			@Override
-			public void onStatusChanged(String provider, int status, Bundle extras) { }
-			@Override
-			public void onProviderEnabled(String provider) { }
-			@Override
-			public void onProviderDisabled(String provider) { }
-
-			@Override
-			public void onLocationChanged(Location location) {
-
-				// Valid location (WiFi location big changes, Hardware bug, etc...)
-				// if (!vaildLocation()) return;
-
-				// Get hit hexes in current location and accuracy, order by nearby
-				GeoHex.Zone[] hitHexes = getIntersectGeoHexes(geoHexes, location);
-				String hitHex = hitHexes.length > 0 ? hitHexes[0].code : null;
-
-				if (lastHex == null) {
-					if (hitHex == null) {
-						// Out to out. Do nothing.
-					} else {
-						// Out to in. Enter.
-						enterHex(hitHex);
-					}
-				} else {
-					if (lastHex == hitHex) {
-						// In to in. Do nothing.
-					} else if (hitHex == null) {
-						// In to out. Leave.
-						leaveHex(lastHex);
-					} else {
-						// Hex内→Hex外→別Hex内
-						// In -> out -> in other hex. Leave and enter.
-						leaveAndEnterHex(lastHex, hitHex);
-					}
-				}
-			}
-
-			private void enterHex(String hitHex) {
-				audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-				writeLastHexToPreference(hitHex);
-			}
-			private void leaveHex(String lastHex) {
-				audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-				writeLastHexToPreference(null);
-			}
-			private void leaveAndEnterHex(String lastHex, String hitHex) {
-				audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-				writeLastHexToPreference(hitHex);
-			}
-
-			private void writeLastHexToPreference(String hitHex) {
-				Editor editor = preference.edit();
-				if (hitHex == null) {
-					editor.remove(Const.PREF_KEY_LAST_HEX);
-				} else {
-					editor.putString(Const.PREF_KEY_LAST_HEX, hitHex);
-				}
-				editor.commit();
-			}
-		});
+		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+		locaMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 0, locListner);
+		locaMan.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 0, locListner);
 	}
 
 	private GeoHex.Zone[] getIntersectGeoHexes(String[] geoHexes, Location location) {
