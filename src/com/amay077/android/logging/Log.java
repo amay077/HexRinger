@@ -14,7 +14,7 @@ import com.google.code.microlog4android.format.PatternFormatter;
 public class Log {
 
 	static private Logger logger = LoggerFactory.getLogger();
-	static private String LOGFILE_PATH = "HexRinger/log.txt";
+	static private String LOGFILE_PATH = "/HexRinger/log.txt";
 	static private boolean isInitialized = false;
 
 	static private void initialize() {
@@ -27,26 +27,26 @@ public class Log {
 		Uri logUri = Uri.withAppendedPath(Uri.fromFile(sdCardDir), LOGFILE_PATH);
 		String logFullPath = logUri.getPath();
 
-		File logFile = new File(logFullPath);
-		if (!logFile.exists()) {
-			logFile.mkdir();
+		File logDir = new File(logFullPath).getParentFile();
+		if (!logDir.exists()) {
+			logDir.mkdir();
 		}
 
 		// Formatter
 		PatternFormatter formatter = new PatternFormatter();
 		formatter.setPattern("%d{ISO8601} [%P] %m %T");
 
-		// FileAppender
-		FileAppender fileAppender = new FileAppender();
-		fileAppender.setFileName(logFullPath);
-		fileAppender.setAppend(true);
-		fileAppender.setFormatter(formatter);
-		logger.addAppender(fileAppender);
-
 		// LogCatAppender
 		LogCatAppender logCatAppender = new LogCatAppender();
 		logCatAppender.setFormatter(formatter);
 		logger.addAppender(logCatAppender);
+
+		// FileAppender
+		FileAppender fileAppender = new FileAppender();
+		fileAppender.setFileName(LOGFILE_PATH);
+		fileAppender.setAppend(true);
+		fileAppender.setFormatter(formatter);
+		logger.addAppender(fileAppender);
 
 		isInitialized = true;
 	}
