@@ -79,7 +79,6 @@ public class MainActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Log.initialize();
         Log.d("MainActivity", "onCreate");
 
         initializeUI();
