@@ -22,6 +22,8 @@ public class Const {
 
 	/** アラームの実行間隔（分） */
 	static public final short ALARM_INTERVAL_MINUTES = 1;
+    /** 測位 */
+	static public final short LOCATION_REQUEST_TIMEOUT_MS = 30000;
 
 	/** AlarmManager にインテント発行を設定する（今からｎ分後） */
 	static public void setAlarmManager(Context context) {
