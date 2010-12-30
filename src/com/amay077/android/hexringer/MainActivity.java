@@ -40,7 +40,7 @@ public class MainActivity extends MapActivity {
     // UI event handler
     /** モニタリング開始ボタンが押されたときの処理 */
     private View.OnClickListener buttonStartMonitoring_onClick = new View.OnClickListener() {
-        @Override
+
         public void onClick(View v) {
             Editor editor = preference.edit();
             editor.putBoolean(Const.PREF_KEY_ALARM_ENABLED, true);
@@ -52,7 +52,7 @@ public class MainActivity extends MapActivity {
     };
 
     private View.OnClickListener buttonStopMonitoring_onClick = new View.OnClickListener() {
-        @Override
+
         public void onClick(View v) {
             Const.cancelAlarmManager(MainActivity.this);
 
