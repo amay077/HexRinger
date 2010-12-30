@@ -1,11 +1,17 @@
 package com.amay077.android.hexringer;
 
+import java.io.File;
 import java.util.SortedSet;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeSet;
 
 import com.amay077.android.logging.Log;
+import com.google.code.microlog4android.Logger;
+import com.google.code.microlog4android.LoggerFactory;
+import com.google.code.microlog4android.appender.FileAppender;
+import com.google.code.microlog4android.appender.LogCatAppender;
+import com.google.code.microlog4android.format.PatternFormatter;
 
 import net.geohex.GeoHex;
 import android.app.Activity;
@@ -14,11 +20,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -78,8 +87,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
 	private void startAreaCheck(Context context, final String[] geoHexes) {
 		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-		locaMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_MS, 0, new MyLocationListener());
-		locaMan.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_MS, 0, new MyLocationListener());
+
+		Criteria criteria = new Criteria();
+
+		for (String provider : locaMan.getProviders(true)) {
+			Log.d("startAreaCheck", provider + " provider found.");
+			locaMan.requestLocationUpdates(provider, MIN_TIME_MS, 0,
+					new MyLocationListener(provider));
+		}
 	}
 
 	private GeoHex.Zone[] getIntersectGeoHexes(String[] geoHexes, Location location) {
@@ -98,8 +113,44 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
 	private class MyLocationListener implements LocationListener {
 		private Timer timerTimeout = new Timer();
+		private Logger logger = LoggerFactory.getLogger();
+		private String provider;
 
-		public MyLocationListener() {
+		private void initialize() {
+			final String LOGFILE_PATH = "/HexRinger/" + provider + ".txt";
+
+			File sdCardDir = Environment.getExternalStorageDirectory();
+			Uri logUri = Uri.withAppendedPath(Uri.fromFile(sdCardDir), LOGFILE_PATH);
+			String logFullPath = logUri.getPath();
+
+			File logDir = new File(logFullPath).getParentFile();
+			if (!logDir.exists()) {
+				logDir.mkdir();
+			}
+
+			logger.setClientID(provider);
+
+			// Formatter
+			PatternFormatter formatter = new PatternFormatter();
+			formatter.setPattern("%m");
+
+			// LogCatAppender
+			LogCatAppender logCatAppender = new LogCatAppender();
+			logCatAppender.setFormatter(formatter);
+			logger.addAppender(logCatAppender);
+
+			// FileAppender
+			FileAppender fileAppender = new FileAppender();
+			fileAppender.setFileName(LOGFILE_PATH);
+			fileAppender.setAppend(true);
+			fileAppender.setFormatter(formatter);
+			logger.addAppender(fileAppender);
+		}
+
+
+		public MyLocationListener(String provider) {
+			this.provider = provider;
+			initialize();
 			timerTimeout.schedule(new TimerTask() {
 
 				@Override
@@ -109,20 +160,20 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 			}, Const.LOCATION_REQUEST_TIMEOUT_MS);
 		}
 
-		@Override
+
 		public void onStatusChanged(String provider, int status, Bundle extras) { }
-		@Override
+
 		public void onProviderEnabled(String provider) { }
-		@Override
+
 		public void onProviderDisabled(String provider) { }
 
-		@Override
+
 		public void onLocationChanged(Location location) {
 			StringBuilder builder = new StringBuilder();
 
-			builder.append(location.getLatitude());
-			builder.append(",");
 			builder.append(location.getLongitude());
+			builder.append(",");
+			builder.append(location.getLatitude());
 			builder.append(",");
 			builder.append(location.getAltitude());
 			builder.append(",");
@@ -130,7 +181,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 			builder.append(",");
 			builder.append(location.getTime());
 
-			Log.d(location.getProvider(), builder.toString());
+			logger.debug(builder.toString());
 
 			stopLocationUpdateAndTimer();
 
