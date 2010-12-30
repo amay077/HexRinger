@@ -21,7 +21,7 @@ public class Const {
 	static public final String PREF_KEY_LAST_HEX = "LAST_HEX";
 
 	/** アラームの実行間隔（分） */
-	static public final short ALARM_INTERVAL_MINUTES = 1;
+	static public final short ALARM_INTERVAL_MINUTES = 5;
     /** 測位 */
 	static public final short LOCATION_REQUEST_TIMEOUT_MS = 30000;
 
