@@ -113,7 +113,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
 	private class MyLocationListener implements LocationListener {
 		private Timer timerTimeout = new Timer();
-		private Logger logger = LoggerFactory.getLogger();
+		private Logger logger = null;
 		private String provider;
 
 		private void initialize() {
@@ -149,6 +149,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
 
 		public MyLocationListener(String provider) {
+			logger = LoggerFactory.getLogger(provider);
 			this.provider = provider;
 			initialize();
 			timerTimeout.schedule(new TimerTask() {
