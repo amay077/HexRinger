@@ -27,7 +27,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
-// HexRinger
+/** HexRinger Main Activity */
 public class MainActivity extends MapActivity {
     private static final int MENU_ID_START = (Menu.FIRST + 1);
     private static final int MENU_ID_CONFIG = (Menu.FIRST + 2);
