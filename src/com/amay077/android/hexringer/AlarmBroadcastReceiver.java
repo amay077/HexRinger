@@ -31,6 +31,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+/** Bloadcast Receiver */
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 	static private final int MIN_TIME_MS = 1000;
 
