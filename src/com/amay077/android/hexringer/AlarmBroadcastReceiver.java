@@ -1,44 +1,31 @@
 package com.amay077.android.hexringer;
 
-import java.io.File;
-import java.util.SortedSet;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeSet;
-
+import com.amay077.android.hexringer.HexEnterLeaveNotifier.HexEnterLeaveListender;
 import com.amay077.android.logging.Log;
-import com.google.code.microlog4android.Logger;
-import com.google.code.microlog4android.LoggerFactory;
-import com.google.code.microlog4android.appender.FileAppender;
-import com.google.code.microlog4android.appender.LogCatAppender;
-import com.google.code.microlog4android.format.PatternFormatter;
+import com.amay077.android.location.LoggingLocationListener;
 
-import net.geohex.GeoHex;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-/** Bloadcast Receiver */
-public class AlarmBroadcastReceiver extends BroadcastReceiver {
+/** Broadcast Receiver */
+public class AlarmBroadcastReceiver extends BroadcastReceiver
+	implements HexEnterLeaveListender {
 	static private final int MIN_TIME_MS = 1000;
 
 	private SharedPreferences preference = null;
 	private String lastHex = null;
 	private AudioManager audioMan = null;
 	private LocationManager locaMan = null;
+	private String[] notifyHexes = null;
+
 
 	/**
 	 * Receive ALARM broadcast from AlarmManager
@@ -49,8 +36,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
 
 		try {
-			preference = PreferenceManager.getDefaultSharedPreferences(context);
+			preference = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);
+			String buf = preference.getString(Const.PREF_KEY_NOTIFY_HEXED, null);
+			notifyHexes = StringUtil.toArray(buf, ",");
+			if (notifyHexes == null || notifyHexes.length == 0){
+	        	Log.w("AlarmBroadcastReceiver", Const.PREF_KEY_NOTIFY_HEXED + " not set.");
+	        	return;
+			}
 
 			audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -70,7 +63,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 	        if (action.equals(Const.ACTION_HEXRINGAR_ALARM)) { // from AlarmManager
 
 	        	// main sequence
-	        	startAreaCheck(context, geoHexes);
+	        	startHexEnterLeaveNotify(context, geoHexes);
 
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
@@ -86,165 +79,73 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 		}
 	}
 
-	private void startAreaCheck(Context context, final String[] geoHexes) {
+	private void startHexEnterLeaveNotify(Context context, final String[] geoHexes) {
 		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 
-		Criteria criteria = new Criteria();
+		locaMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_MS, 0,
+				new HexEnterLeaveNotifier(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, null,
+						notifyHexes, lastHex, this));
 
 		for (String provider : locaMan.getProviders(true)) {
 			Log.d("startAreaCheck", provider + " provider found.");
 			locaMan.requestLocationUpdates(provider, MIN_TIME_MS, 0,
-					new MyLocationListener(provider));
+					new LoggingLocationListener(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, "/HexRinger/" + provider + ".txt"));
 		}
 	}
 
-	private GeoHex.Zone[] getIntersectGeoHexes(String[] geoHexes, Location location) {
-		SortedSet<GeoHex.Zone> intersectsZones = new TreeSet<GeoHex.Zone>();
-		for (String geoHex : geoHexes) {
-			GeoHex.Zone zone = GeoHex.decode(geoHex);
-
-			double x = 0d, y = 0d, radius = 0d;
-			if (zone.intersects(x, y, radius)) {
-				intersectsZones.add(zone);
-			}
-		}
-
-		return (GeoHex.Zone[])intersectsZones.toArray();
+	@Override
+	public void onEnter(String enterHex) {
+		audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+		writeLastHexToPreference(enterHex);
 	}
 
-	private class MyLocationListener implements LocationListener {
-		private Timer timerTimeout = new Timer();
-		private Logger logger = null;
-		private String provider;
+	@Override
+	public void onLeave(String leaveHex) {
+		audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+		writeLastHexToPreference(null);
+	}
 
-		private void initialize() {
-			final String LOGFILE_PATH = "/HexRinger/" + provider + ".txt";
+	private void writeLastHexToPreference(String hitHex) {
+		Editor editor = preference.edit();
+		if (hitHex == null) {
+			editor.remove(Const.PREF_KEY_LAST_HEX);
+		} else {
+			editor.putString(Const.PREF_KEY_LAST_HEX, hitHex);
+		}
+		editor.commit();
+	}
 
-			File sdCardDir = Environment.getExternalStorageDirectory();
-			Uri logUri = Uri.withAppendedPath(Uri.fromFile(sdCardDir), LOGFILE_PATH);
-			String logFullPath = logUri.getPath();
-
-			File logDir = new File(logFullPath).getParentFile();
-			if (!logDir.exists()) {
-				logDir.mkdir();
+	public static class StringUtil {
+		static public String[] toArray(String buf, String splitter) {
+			if (StringUtil.isNullOrEmpty(buf)){
+	        	throw new IllegalArgumentException("buf is null or empty.");
 			}
 
-			logger.setClientID(provider);
+			if (StringUtil.isNullOrEmpty(splitter)) {
+	        	throw new IllegalArgumentException("splitter is null or empty.");
+			}
 
-			// Formatter
-			PatternFormatter formatter = new PatternFormatter();
-			formatter.setPattern("%m");
-
-			// LogCatAppender
-			LogCatAppender logCatAppender = new LogCatAppender();
-			logCatAppender.setFormatter(formatter);
-			logger.addAppender(logCatAppender);
-
-			// FileAppender
-			FileAppender fileAppender = new FileAppender();
-			fileAppender.setFileName(LOGFILE_PATH);
-			fileAppender.setAppend(true);
-			fileAppender.setFormatter(formatter);
-			logger.addAppender(fileAppender);
+			return buf.split(splitter);
 		}
 
-
-		public MyLocationListener(String provider) {
-			logger = LoggerFactory.getLogger(provider);
-			this.provider = provider;
-			initialize();
-			timerTimeout.schedule(new TimerTask() {
-
-				@Override
-				public void run() {
-					stopLocationUpdateAndTimer();
-				}
-			}, Const.LOCATION_REQUEST_TIMEOUT_MS);
-		}
-
-
-		public void onStatusChanged(String provider, int status, Bundle extras) { }
-
-		public void onProviderEnabled(String provider) { }
-
-		public void onProviderDisabled(String provider) { }
-
-
-		public void onLocationChanged(Location location) {
+		static public String fromArray(String[] array, String splitter) {
 			StringBuilder builder = new StringBuilder();
-
-			builder.append(location.getLongitude());
-			builder.append(",");
-			builder.append(location.getLatitude());
-			builder.append(",");
-			builder.append(location.getAltitude());
-			builder.append(",");
-			builder.append(location.getAccuracy());
-			builder.append(",");
-			builder.append(location.getTime());
-
-			logger.debug(builder.toString());
-
-			stopLocationUpdateAndTimer();
-
-			// Valid location (WiFi location big changes, Hardware bug, etc...)
-			// if (!vaildLocation()) return;
-
-//			// Get hit hexes in current location and accuracy, order by nearby
-//			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(geoHexes, location);
-//			String hitHex = hitHexes.length > 0 ? hitHexes[0].code : null;
-//
-//			if (lastHex == null) {
-//				if (hitHex == null) {
-//					// Out to out. Do nothing.
-//				} else {
-//					// Out to in. Enter.
-//					enterHex(hitHex);
-//				}
-//			} else {
-//				if (lastHex == hitHex) {
-//					// In to in. Do nothing.
-//				} else if (hitHex == null) {
-//					// In to out. Leave.
-//					leaveHex(lastHex);
-//				} else {
-//					// Hex内→Hex外→別Hex内
-//					// In -> out -> in other hex. Leave and enter.
-//					leaveAndEnterHex(lastHex, hitHex);
-//				}
-//			}
-		}
-
-		private void stopLocationUpdateAndTimer() {
-			locaMan.removeUpdates(this);
-
-			timerTimeout.cancel();
-			timerTimeout.purge();
-			timerTimeout = null;
-		}
-
-		private void enterHex(String hitHex) {
-			audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-			writeLastHexToPreference(hitHex);
-		}
-		private void leaveHex(String lastHex) {
-			audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-			writeLastHexToPreference(null);
-		}
-		private void leaveAndEnterHex(String lastHex, String hitHex) {
-			audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-			writeLastHexToPreference(hitHex);
-		}
-
-		private void writeLastHexToPreference(String hitHex) {
-			Editor editor = preference.edit();
-			if (hitHex == null) {
-				editor.remove(Const.PREF_KEY_LAST_HEX);
-			} else {
-				editor.putString(Const.PREF_KEY_LAST_HEX, hitHex);
+			boolean theFirst = true;
+			for (String string : array) {
+				if (!theFirst) {
+					builder.append(splitter);
+				} else {
+					theFirst = false;
+				}
+				builder.append(string);
 			}
-			editor.commit();
+
+			return builder.toString();
 		}
 
+		static public boolean isNullOrEmpty(String value) {
+			return (value == null) || (value == "");
+		}
 	}
+
 }
