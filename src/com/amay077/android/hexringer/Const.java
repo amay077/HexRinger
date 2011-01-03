@@ -18,6 +18,7 @@ public class Const {
 
 	// Preference
 	static public final String PREF_KEY_ALARM_ENABLED = "ALARM_ENABLED";
+	static public final String PREF_KEY_NOTIFY_HEXED = "NOTIFY_HEXES";
 	static public final String PREF_KEY_LAST_HEX = "LAST_HEX";
 
 	/** アラームの実行間隔（分） */
