@@ -44,11 +44,14 @@ public class MainActivity extends MapActivity {
     private View.OnClickListener buttonStartMonitoring_onClick = new View.OnClickListener() {
 
         public void onClick(View v) {
+        	// TODO : Is selecting Hex?
+        	String[] watchHexes = (String[])watchHexOverlay.getSelectedGeoHexCodes().toArray();
+
             Editor editor = preference.edit();
             editor.putBoolean(Const.PREF_KEY_ALARM_ENABLED, true);
             editor.commit();
 
-            Const.setAlarmManager(MainActivity.this);
+            Const.setAlarmManager(MainActivity.this, watchHexes);
             toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
         }
     };

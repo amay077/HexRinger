@@ -29,12 +29,12 @@ public class Const {
 	public static final String ARRAY_SPLITTER = ",";
 
 	/** AlarmManager にインテント発行を設定する（今からｎ分後） */
-	static public void setAlarmManager(Context context) {
+	static public void setAlarmManager(Context context, String[] watchHexes) {
 		Intent intent = new Intent(context,
 				AlarmBroadcastReceiver.class);
 
 		intent.setAction(Const.ACTION_HEXRINGAR_ALARM);
-		intent.putExtra(Const.EXTRA_GEOHEXES, new String[]{"aaa"});
+		intent.putExtra(Const.EXTRA_GEOHEXES, watchHexes);
 
 		PendingIntent sender = PendingIntent.getBroadcast(
 				context, 0, intent, 0);
