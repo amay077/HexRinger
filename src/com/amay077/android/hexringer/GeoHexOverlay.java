@@ -1,8 +1,9 @@
 package com.amay077.android.hexringer;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+
 import net.geohex.GeoHex;
 import net.geohex.GeoHex.Loc;
 import net.geohex.GeoHex.Zone;
@@ -39,7 +40,7 @@ public class GeoHexOverlay extends Overlay {
 	private Paint selectionPaint = new Paint();
 
 	/** 選択した GeoHex の Code 群 */
-	private Map<String, Point[]> selectedGeoHexCodes = new HashMap<String, Point[]>();
+	private Set<String> selectedGeoHexCodes = new HashSet<String>();
 
 	/** 選択時の GeoHex のレベル(今は GoogleMap の ZoomLV と連動) */
 	private int geoHexLevel;
@@ -59,12 +60,12 @@ public class GeoHexOverlay extends Overlay {
 
 	// setter/getter ----------------------------------------------------------
 	/** 選択された GeoHex のコード群 を設定します。 */
-	public void setSelectedGeoHexCodes(Map<String, Point[]> selectedGeoHexCodes) {
+	public void setSelectedGeoHexCodes(Set<String> selectedGeoHexCodes) {
 		this.selectedGeoHexCodes = selectedGeoHexCodes;
 	}
 
 	/** 選択された GeoHex のコード群 を取得します。 */
-	public Map<String, Point[]> getSelectedGeoHexCodes() {
+	public Set<String> getSelectedGeoHexCodes() {
 		return selectedGeoHexCodes;
 	}
 
@@ -99,7 +100,7 @@ public class GeoHexOverlay extends Overlay {
 
 		// 選択したものを描画
 		// TODO: 直接 values 使えばいいじゃん
-		for (String code : getSelectedGeoHexCodes().keySet()) {
+		for (String code : getSelectedGeoHexCodes()) {
 			Zone z = GeoHex.getZoneByCode(code);
 			points = getGeoHexZonePoints(z, proj);
 			drawPolyline(canvas, points, selectionPaint);
@@ -119,10 +120,10 @@ public class GeoHexOverlay extends Overlay {
 
 		// 選択 or 選択解除
 		// TODO: レベル上位&下位の選択済み GeoHex の対応
-		if (getSelectedGeoHexCodes().keySet().contains(zone.code)) {
+		if (getSelectedGeoHexCodes().contains(zone.code)) {
 			getSelectedGeoHexCodes().remove(zone.code);
 		} else {
-			getSelectedGeoHexCodes().put(zone.code, getGeoHexZonePoints(zone, mapView.getProjection()));
+			getSelectedGeoHexCodes().add(zone.code);
 		}
 
 		// 再描画
