@@ -1,10 +1,12 @@
 package com.amay077.android.hexringer;
 
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import net.geohex.GeoHex;
 
+import com.amay077.android.hexringer.AlarmBroadcastReceiver.StringUtil;
 import com.amay077.android.hexringer.R;
 import com.amay077.android.logging.Log;
 import com.google.android.maps.GeoPoint;
@@ -90,6 +92,12 @@ public class MainActivity extends MapActivity {
         preference = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 
         toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
+
+        Set<String> watchHexes = watchHexOverlay.getSelectedGeoHexCodes();
+        String[] array = StringUtil.toArray(preference.getString(Const.PREF_KEY_NOTIFY_HEXED, null), Const.ARRAY_SPLITTER);
+        for (String string : array) {
+        	watchHexes.add(string);
+		}
     }
 
     private void initializeUI() {
@@ -203,7 +211,7 @@ public class MainActivity extends MapActivity {
                     });
                 }
 
-                for (String geoHexCode : watchHexOverlay.getSelectedGeoHexCodes().keySet()) {
+                for (String geoHexCode : watchHexOverlay.getSelectedGeoHexCodes()) {
 
                     // 監視する GeoHex を取得
                     GeoHex.Zone watchZone = GeoHex.decode(geoHexCode);
