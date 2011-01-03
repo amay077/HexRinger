@@ -39,7 +39,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			preference = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);
 			String buf = preference.getString(Const.PREF_KEY_NOTIFY_HEXED, null);
-			notifyHexes = StringUtil.toArray(buf, ",");
+			notifyHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
 			if (notifyHexes == null || notifyHexes.length == 0){
 	        	Log.w("AlarmBroadcastReceiver", Const.PREF_KEY_NOTIFY_HEXED + " not set.");
 	        	return;

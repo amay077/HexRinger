@@ -23,8 +23,10 @@ public class Const {
 
 	/** アラームの実行間隔（分） */
 	static public final short ALARM_INTERVAL_MINUTES = 5;
-    /** 測位 */
+    /** 初回測位までのタイムアウト時間（ミリ秒） */
 	static public final short LOCATION_REQUEST_TIMEOUT_MS = 30000;
+	/** 配列を文字列化する時の区切り文字 */
+	public static final String ARRAY_SPLITTER = ",";
 
 	/** AlarmManager にインテント発行を設定する（今からｎ分後） */
 	static public void setAlarmManager(Context context) {
