@@ -24,7 +24,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	private String lastHex = null;
 	private AudioManager audioMan = null;
 	private LocationManager locaMan = null;
-	private String[] notifyHexes = null;
+	private String[] watchHexes = null;
 
 
 	/**
@@ -39,8 +39,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			preference = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);
 			String buf = preference.getString(Const.PREF_KEY_NOTIFY_HEXED, null);
-			notifyHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
-			if (notifyHexes == null || notifyHexes.length == 0){
+			watchHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
+			if (watchHexes == null || watchHexes.length == 0){
 	        	Log.w("AlarmBroadcastReceiver", Const.PREF_KEY_NOTIFY_HEXED + " not set.");
 	        	return;
 			}
@@ -68,13 +68,13 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
 	        	// TODO: Need configuration
-				Const.setAlarmManager(context);
+				Const.setAlarmManager(context, watchHexes);
 	        }
 		} catch (Exception exp) {
 			Log.w("AlarmBroadcastReceiver", "failed.", exp);
 		} finally {
 			// Set next Alarm to AlarmManager
-			Const.setAlarmManager(context);
+			Const.setAlarmManager(context, watchHexes);
 			setResult(Activity.RESULT_OK, null, null);
 		}
 	}
@@ -84,7 +84,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 		locaMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_MS, 0,
 				new HexEnterLeaveNotifier(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, null,
-						notifyHexes, lastHex, this));
+						watchHexes, lastHex, this));
 
 		for (String provider : locaMan.getProviders(true)) {
 			Log.d("startAreaCheck", provider + " provider found.");
