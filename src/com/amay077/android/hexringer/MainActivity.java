@@ -87,7 +87,7 @@ public class MainActivity extends MapActivity {
         myLocOverlay = new MyLocationOverlayEx(this, mapview);
         mapview.getOverlays().add(myLocOverlay);
         mAudio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        preference = PreferenceManager.getDefaultSharedPreferences(this);
+        preference = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 
         toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
     }
