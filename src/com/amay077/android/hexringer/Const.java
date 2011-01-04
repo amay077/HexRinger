@@ -11,14 +11,11 @@ import android.util.Log;
 
 public class Const {
 	// Intent Action
-	static public final String ACTION_HEXRINGAR_ALARM = "com.amay077.android.hexringar.ALARM";
-
-	// Intent Data
-	static public final String EXTRA_GEOHEXES = "EXTRA_GEOHEXES";
+	static public final String ACTION_HEXRINGAR_ALARM = "com.amay077.android.hexringer.ALARM";
 
 	// Preference
 	static public final String PREF_KEY_ALARM_ENABLED = "ALARM_ENABLED";
-	static public final String PREF_KEY_NOTIFY_HEXED = "NOTIFY_HEXES";
+	static public final String PREF_KEY_WATCH_HEXES = "WATCH_HEXES";
 	static public final String PREF_KEY_LAST_HEX = "LAST_HEX";
 
 	/** アラームの実行間隔（分） */
@@ -29,12 +26,11 @@ public class Const {
 	public static final String ARRAY_SPLITTER = ",";
 
 	/** AlarmManager にインテント発行を設定する（今からｎ分後） */
-	static public void setAlarmManager(Context context, String[] watchHexes) {
+	static public void setAlarmManager(Context context) {
 		Intent intent = new Intent(context,
 				AlarmBroadcastReceiver.class);
 
 		intent.setAction(Const.ACTION_HEXRINGAR_ALARM);
-		intent.putExtra(Const.EXTRA_GEOHEXES, watchHexes);
 
 		PendingIntent sender = PendingIntent.getBroadcast(
 				context, 0, intent, 0);
@@ -56,7 +52,6 @@ public class Const {
 				AlarmBroadcastReceiver.class);
 
 		intent.setAction(Const.ACTION_HEXRINGAR_ALARM);
-		intent.putExtra(Const.EXTRA_GEOHEXES, new String[]{"aaa"});
 
 		PendingIntent sender = PendingIntent.getBroadcast(
 				context, 0, intent, 0);
