@@ -80,7 +80,7 @@ public class GeoHexOverlay extends Overlay {
 		if (mapView.getZoomLevel() <= MIN_ZOOMLEVEL) { return; }
 
 		// GeoHex のレベルは GoogleMap と連動
-		geoHexLevel = mapView.getZoomLevel();
+		geoHexLevel = mapView.getZoomLevel() - 1;
 
 		GeoPoint geoCenter = mapView.getMapCenter();
 		Projection proj = mapView.getProjection();
