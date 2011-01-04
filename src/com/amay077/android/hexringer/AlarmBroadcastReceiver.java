@@ -24,68 +24,57 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	private String lastHex = null;
 	private AudioManager audioMan = null;
 	private LocationManager locaMan = null;
-	private String[] watchHexes = null;
-
 
 	/**
 	 * Receive ALARM broadcast from AlarmManager
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
-    	Log.d("AlarmBroadcastReceiver", "onReceive");
+    	Log.d("AlarmBroadcastReceiver.onReceive", "called.");
     	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
 
 		try {
 			preference = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);
-			String buf = preference.getString(Const.PREF_KEY_NOTIFY_HEXED, null);
-			watchHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
+			String buf = preference.getString(Const.PREF_KEY_WATCH_HEXES, null);
+
+			Log.d("AlarmBroadcastReceiver.onReceive", Const.PREF_KEY_WATCH_HEXES + " = " + buf);
+
+			String[] watchHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
 			if (watchHexes == null || watchHexes.length == 0){
-	        	Log.w("AlarmBroadcastReceiver", Const.PREF_KEY_NOTIFY_HEXED + " not set.");
+	        	Log.w("AlarmBroadcastReceiver.onReceive", Const.PREF_KEY_WATCH_HEXES + " not set.");
 	        	return;
 			}
 
 			audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
-	        if (!intent.hasExtra(Const.EXTRA_GEOHEXES)) {
-	        	Log.w("AlarmBroadcastReceiver", Const.EXTRA_GEOHEXES + " not found.");
-	        	return;
-	        }
-
 	        String action = intent.getAction();
-	        String[] geoHexes = intent.getStringArrayExtra(Const.EXTRA_GEOHEXES);
-
-	        if (geoHexes == null || geoHexes.length == 0) {
-	        	Log.w("AlarmBroadcastReceiver", Const.EXTRA_GEOHEXES + " is length zero.");
-	        	return;
-	        }
-
 	        if (action.equals(Const.ACTION_HEXRINGAR_ALARM)) { // from AlarmManager
-
 	        	// main sequence
-	        	startHexEnterLeaveNotify(context, geoHexes);
+	        	startHexEnterLeaveNotify(context, watchHexes);
 
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
 	        	// TODO: Need configuration
-				Const.setAlarmManager(context, watchHexes);
+				Const.setAlarmManager(context);
 	        }
 		} catch (Exception exp) {
-			Log.w("AlarmBroadcastReceiver", "failed.", exp);
+			Log.w("AlarmBroadcastReceiver.onReceive", "failed.", exp);
 		} finally {
 			// Set next Alarm to AlarmManager
-			Const.setAlarmManager(context, watchHexes);
+			Const.setAlarmManager(context);
 			setResult(Activity.RESULT_OK, null, null);
 		}
 	}
 
-	private void startHexEnterLeaveNotify(Context context, final String[] geoHexes) {
+	private void startHexEnterLeaveNotify(Context context, String[] watchHexes) {
 		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 
 		locaMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_MS, 0,
 				new HexEnterLeaveNotifier(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, null,
 						watchHexes, lastHex, this));
 
+		// FIXME : Debug only.
 		for (String provider : locaMan.getProviders(true)) {
 			Log.d("startAreaCheck", provider + " provider found.");
 			locaMan.requestLocationUpdates(provider, MIN_TIME_MS, 0,
@@ -93,14 +82,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		}
 	}
 
-	@Override
 	public void onEnter(String enterHex) {
+		Log.d("AlarmBroadcastReceiver.onEnter", enterHex);
 		audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 		writeLastHexToPreference(enterHex);
 	}
 
-	@Override
 	public void onLeave(String leaveHex) {
+		Log.d("AlarmBroadcastReceiver.onLeave", leaveHex);
 		audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 		writeLastHexToPreference(null);
 	}
