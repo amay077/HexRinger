@@ -40,7 +40,9 @@ public class MainActivity extends MapActivity {
 
         public void onClick(View v) {
         	// TODO : Is selecting Hex?
-        	String[] watchHexes = (String[])watchHexOverlay.getSelectedGeoHexCodes().toArray();
+        	Set<String> watchHexesSet = watchHexOverlay.getSelectedGeoHexCodes();
+        	String[] watchHexes = new String[watchHexesSet.size()];
+        	watchHexesSet.toArray(watchHexes);
 
             Editor editor = preference.edit();
             editor.putBoolean(Const.PREF_KEY_ALARM_ENABLED, true);
@@ -83,10 +85,13 @@ public class MainActivity extends MapActivity {
         toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
 
         Set<String> watchHexes = watchHexOverlay.getSelectedGeoHexCodes();
-        String[] array = StringUtil.toArray(preference.getString(Const.PREF_KEY_WATCH_HEXES, null), Const.ARRAY_SPLITTER);
-        for (String string : array) {
-        	watchHexes.add(string);
-		}
+        String watchHexesStr = preference.getString(Const.PREF_KEY_WATCH_HEXES, null);
+        if (!StringUtil.isNullOrEmpty(watchHexesStr)) {
+	        String[] array = StringUtil.toArray(watchHexesStr, Const.ARRAY_SPLITTER);
+	        for (String string : array) {
+	        	watchHexes.add(string);
+			}
+        }
     }
 
     private void initializeUI() {
