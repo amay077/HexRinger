@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,13 +53,21 @@ public class MainActivity extends MapActivity {
 
             Const.setAlarmManager(MainActivity.this);
             toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
+
+            String Alarm1 = Settings.System.getString(getContentResolver(),
+                    Settings.System.NEXT_ALARM_FORMATTED);
+            Log.d("buttonStartMonitoring_onClick", Alarm1);
         }
     };
 
     private View.OnClickListener buttonStopMonitoring_onClick = new View.OnClickListener() {
 
         public void onClick(View v) {
-            Const.cancelAlarmManager(MainActivity.this);
+            String Alarm1 = Settings.System.getString(getContentResolver(),
+                    Settings.System.NEXT_ALARM_FORMATTED);
+            Log.d("buttonStopMonitoring_onClick", Alarm1);
+
+        	Const.cancelAlarmManager(MainActivity.this);
 
             Editor editor = preference.edit();
             editor.putBoolean(Const.PREF_KEY_ALARM_ENABLED, false);
