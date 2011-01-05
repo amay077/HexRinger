@@ -6,6 +6,8 @@ import java.util.TreeSet;
 import net.geohex.GeoHex;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
+
 import com.amay077.android.location.TimeoutableLocationListener;
 
 public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
@@ -26,32 +28,36 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 
 	public void onLocationChanged(Location location) {
 		super.onLocationChanged(location);
+		Log.e("HexEnterLeaveNotifier.onLocationChanged", "called.");
+		try {
+			// Valid location (WiFi location big changes, Hardware bug, etc...)
+			// if (!vaildLocation()) return;
 
-		// Valid location (WiFi location big changes, Hardware bug, etc...)
-		// if (!vaildLocation()) return;
+			// Get hit hexes in current location and accuracy, order by nearby
+			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(notifyHexes, location);
+			String hitHex = hitHexes.length > 0 ? hitHexes[0].code : null;
 
-		// Get hit hexes in current location and accuracy, order by nearby
-		GeoHex.Zone[] hitHexes = getIntersectGeoHexes(notifyHexes, location);
-		String hitHex = hitHexes.length > 0 ? hitHexes[0].code : null;
-
-		if (lastHex == null) {
-			if (hitHex == null) {
-				// Out to out. Do nothing.
+			if (lastHex == null) {
+				if (hitHex == null) {
+					// Out to out. Do nothing.
+				} else {
+					// Out to in. Enter.
+					enterHex(hitHex);
+				}
 			} else {
-				// Out to in. Enter.
-				enterHex(hitHex);
+				if (lastHex == hitHex) {
+					// In to in. Do nothing.
+				} else if (hitHex == null) {
+					// In to out. Leave.
+					leaveHex(lastHex);
+				} else {
+					// Hex内→Hex外→別Hex内
+					// In -> out -> in other hex. Leave and enter.
+					leaveAndEnterHex(lastHex, hitHex);
+				}
 			}
-		} else {
-			if (lastHex == hitHex) {
-				// In to in. Do nothing.
-			} else if (hitHex == null) {
-				// In to out. Leave.
-				leaveHex(lastHex);
-			} else {
-				// Hex内→Hex外→別Hex内
-				// In -> out -> in other hex. Leave and enter.
-				leaveAndEnterHex(lastHex, hitHex);
-			}
+		} catch (Exception e) {
+			Log.e("HexEnterLeaveNotifier.onLocationChanged", "failed.", e);
 		}
 	}
 
