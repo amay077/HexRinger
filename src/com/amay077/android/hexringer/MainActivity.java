@@ -67,7 +67,7 @@ public class MainActivity extends MapActivity {
         }
     };
 
-    /** Called when the activity is first created. */
+    /** Called when the activity is first created. */ 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
