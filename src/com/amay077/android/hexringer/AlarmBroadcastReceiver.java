@@ -57,6 +57,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	        	// Set Alarm to AlarmManager on boot
 	        	// TODO: Need configuration
 				Const.setAlarmManager(context);
+	        } else {
+	        	Log.w("AlarmBroadcastReceiver.onReceive", "not support intent action:" + action);
 	        }
 		} catch (Exception exp) {
 			Log.w("AlarmBroadcastReceiver.onReceive", "failed.", exp);
@@ -68,15 +70,16 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	}
 
 	private void startHexEnterLeaveNotify(Context context, String[] watchHexes) {
+		Log.d("AlarmBroadcastReceiver.startHexEnterLeaveNotify", "called.");
 		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 
-		locaMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_MS, 0,
+		locaMan.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_MS, 0,
 				new HexEnterLeaveNotifier(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, null,
 						watchHexes, lastHex, this));
 
 		// FIXME : Debug only.
 		for (String provider : locaMan.getProviders(true)) {
-			Log.d("startAreaCheck", provider + " provider found.");
+			Log.d("AlarmBroadcastReceiver.startHexEnterLeaveNotify", provider + " provider found.");
 			locaMan.requestLocationUpdates(provider, MIN_TIME_MS, 0,
 					new LoggingLocationListener(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, "/HexRinger/" + provider + ".txt"));
 		}
