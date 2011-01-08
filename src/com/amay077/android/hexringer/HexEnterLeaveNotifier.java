@@ -18,8 +18,8 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 
 	public HexEnterLeaveNotifier(LocationManager locaMan, long timeOutMS,
 			TimeoutLisener timeoutListener, String[] notifyHexes, String lastHex, HexEnterLeaveListender enterLeaveListener) {
-
 		super(locaMan, timeOutMS, timeoutListener);
+		Log.d("HexEnterLeaveNotifier.ctor", "called.");
 
 		this.notifyHexes = notifyHexes;
 		this.lastHex = lastHex;

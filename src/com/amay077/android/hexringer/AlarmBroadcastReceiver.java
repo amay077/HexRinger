@@ -77,12 +77,12 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 				new HexEnterLeaveNotifier(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, null,
 						watchHexes, lastHex, this));
 
-		// FIXME : Debug only.
-		for (String provider : locaMan.getProviders(true)) {
-			Log.d("AlarmBroadcastReceiver.startHexEnterLeaveNotify", provider + " provider found.");
-			locaMan.requestLocationUpdates(provider, MIN_TIME_MS, 0,
-					new LoggingLocationListener(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, "/HexRinger/" + provider + ".txt"));
-		}
+//		// FIXME : Debug only.
+//		for (String provider : locaMan.getProviders(true)) {
+//			Log.d("AlarmBroadcastReceiver.startHexEnterLeaveNotify", provider + " provider found.");
+//			locaMan.requestLocationUpdates(provider, MIN_TIME_MS, 0,
+//					new LoggingLocationListener(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, "/HexRinger/" + provider + ".txt"));
+//		}
 	}
 
 	public void onEnter(String enterHex) {
