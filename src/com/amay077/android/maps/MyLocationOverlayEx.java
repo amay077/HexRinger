@@ -1,4 +1,4 @@
-package com.amay077.android.hexringer;
+package com.amay077.android.maps;
 
 
 import android.content.Context;
