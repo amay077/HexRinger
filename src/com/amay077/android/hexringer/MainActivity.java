@@ -4,6 +4,8 @@ import java.util.Set;
 import com.amay077.android.hexringer.AlarmBroadcastReceiver.StringUtil;
 import com.amay077.android.hexringer.R;
 import com.amay077.android.logging.Log;
+import com.amay077.android.maps.GeoHexOverlay;
+import com.amay077.android.maps.MyLocationOverlayEx;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -67,7 +69,7 @@ public class MainActivity extends MapActivity {
         }
     };
 
-    /** Called when the activity is first created. */ 
+    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
