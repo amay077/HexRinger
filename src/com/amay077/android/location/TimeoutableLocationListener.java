@@ -7,12 +7,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 public class TimeoutableLocationListener implements LocationListener {
 	protected Timer timerTimeout = new Timer();
 	protected LocationManager locaMan = null;
 
 	public TimeoutableLocationListener(LocationManager locaMan, long timeOutMS, final TimeoutLisener timeoutListener) {
+		Log.d("TimeoutableLocationListener.ctor", "called.");
 		this.locaMan  = locaMan;
 		timerTimeout.schedule(new TimerTask() {
 
@@ -24,11 +26,13 @@ public class TimeoutableLocationListener implements LocationListener {
 				stopLocationUpdateAndTimer();
 			}
 		}, timeOutMS);
+		Log.d("TimeoutableLocationListener.timerTimeout", "started.");
 	}
 
 
 	@Override
 	public void onLocationChanged(Location location) {
+		Log.d("TimeoutableLocationListener.onLocationChanged", "called.");
 		stopLocationUpdateAndTimer();
 	}
 
@@ -42,6 +46,7 @@ public class TimeoutableLocationListener implements LocationListener {
 	public void onStatusChanged(String s, int i, Bundle bundle) { }
 
 	private void stopLocationUpdateAndTimer() {
+		Log.d("TimeoutableLocationListener.stopLocationUpdateAndTimer", "called.");
 		locaMan.removeUpdates(this);
 
 		timerTimeout.cancel();
