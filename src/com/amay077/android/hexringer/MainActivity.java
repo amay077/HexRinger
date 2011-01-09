@@ -12,7 +12,6 @@ import com.google.android.maps.MyLocationOverlay;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
