@@ -2,8 +2,6 @@ package com.amay077.android.hexringer;
 
 import com.amay077.android.hexringer.HexEnterLeaveNotifier.HexEnterLeaveListender;
 import com.amay077.android.logging.Log;
-import com.amay077.android.location.LoggingLocationListener;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,6 +22,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	private String lastHex = null;
 	private AudioManager audioMan = null;
 	private LocationManager locaMan = null;
+	private Context context = null;
 
 	/**
 	 * Receive ALARM broadcast from AlarmManager
@@ -34,6 +33,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
     	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
 
 		try {
+			this.context = context;
+
 			preference = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);
 			String buf = preference.getString(Const.PREF_KEY_WATCH_HEXES, null);
@@ -51,7 +52,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	        String action = intent.getAction();
 	        if (action.equals(Const.ACTION_HEXRINGAR_ALARM)) { // from AlarmManager
 	        	// main sequence
-	        	startHexEnterLeaveNotify(context, watchHexes);
+	        	startHexEnterLeaveNotify(watchHexes);
 
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
@@ -69,7 +70,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		}
 	}
 
-	private void startHexEnterLeaveNotify(Context context, String[] watchHexes) {
+	private void startHexEnterLeaveNotify(String[] watchHexes) {
 		Log.d("AlarmBroadcastReceiver.startHexEnterLeaveNotify", "called.");
 		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -87,12 +88,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 	public void onEnter(String enterHex) {
 		Log.d("AlarmBroadcastReceiver.onEnter", enterHex);
+    	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 		writeLastHexToPreference(enterHex);
 	}
 
 	public void onLeave(String leaveHex) {
 		Log.d("AlarmBroadcastReceiver.onLeave", leaveHex);
+    	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 		writeLastHexToPreference(null);
 	}
