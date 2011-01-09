@@ -6,9 +6,9 @@ import java.util.TreeSet;
 import net.geohex.GeoHex;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.amay077.android.location.TimeoutableLocationListener;
+import com.amay077.android.logging.Log;
 
 public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 
@@ -32,6 +32,12 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 		try {
 			// Valid location (WiFi location big changes, Hardware bug, etc...)
 			// if (!vaildLocation()) return;
+
+			Log.d("HexEnterLeaveNotifier.onLocationChanged",
+					"lat/long/accuracy:"
+					+ String.valueOf(location.getLatitude()) + "/"
+					+ String.valueOf(location.getLongitude()) + "/"
+					+ String.valueOf(location.getAccuracy()));
 
 			// Get hit hexes in current location and accuracy, order by nearby
 			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(notifyHexes, location);
@@ -88,13 +94,28 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 		for (String geoHex : geoHexes) {
 			GeoHex.Zone zone = GeoHex.decode(geoHex);
 
-			double x = 0d, y = 0d, radius = 0d;
-			if (zone.intersects(x, y, radius)) {
+			double x = location.getLongitude();
+			double y = location.getLatitude();
+			double radius = location.getAccuracy();
+
+			float[] results = new float[1];
+			Location.distanceBetween(
+					location.getLatitude(), location.getLongitude(),
+					location.getLatitude(), location.getLongitude() + 0.01d,
+					results);
+			float meterPerDegree = results[0] * 100f;
+
+			Log.d("HexEnterLeaveNotifier.getIntersectGeoHexes",
+					"radiumMetre/degree:" + String.valueOf(radius) + "/"
+					+ String.valueOf(radius / meterPerDegree));
+
+			if (zone.intersects(x, y, radius / meterPerDegree)) {
 				intersectsZones.add(zone);
 			}
 		}
 
-		return (GeoHex.Zone[])intersectsZones.toArray();
+		GeoHex.Zone[] zoneArray = new GeoHex.Zone[intersectsZones.size()];
+		return intersectsZones.toArray(zoneArray);
 	}
 
 	public interface HexEnterLeaveListender {
