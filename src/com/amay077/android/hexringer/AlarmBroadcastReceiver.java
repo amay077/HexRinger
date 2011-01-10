@@ -91,6 +91,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
     	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 		writeLastHexToPreference(enterHex);
+		Log.d("AlarmBroadcastReceiver.onEnter", "set ringermode normal.");
 	}
 
 	public void onLeave(String leaveHex) {
@@ -98,6 +99,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
     	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 		writeLastHexToPreference(null);
+		Log.d("AlarmBroadcastReceiver.onLeave", "set ringermode vibrate.");
 	}
 
 	private void writeLastHexToPreference(String hitHex) {
