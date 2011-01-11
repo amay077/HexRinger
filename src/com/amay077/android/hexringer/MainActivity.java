@@ -78,6 +78,8 @@ public class MainActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        Log.d(getApplication().getPackageName(), "started.");
+        Log.writeApplicationInfo(this);
         Log.d(this.getClass().getSimpleName(), "onCreate called.");
 
         initializeUI();
@@ -201,5 +203,6 @@ public class MainActivity extends MapActivity {
     protected void onDestroy() {
         Log.d(this.getClass().getSimpleName(), "onDestroy called.");
     	super.onDestroy();
+        Log.d(getApplication().getPackageName(), "finished.");
     }
 }

@@ -2,6 +2,11 @@ package com.amay077.android.logging;
 
 import java.io.File;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -49,6 +54,37 @@ public class Log {
 		logger.addAppender(fileAppender);
 
 		isInitialized = true;
+	}
+
+	static public void writeApplicationInfo(Context context) {
+    	initialize();
+		try {
+			PackageInfo pkgInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 1);
+
+			logger.info("PackageName:" + pkgInfo.packageName);
+			logger.info("VersionName:" + pkgInfo.versionName);
+			logger.info("VersionCode:" + String.valueOf(pkgInfo.versionCode));
+			logger.info("ApplicationName:" + pkgInfo.applicationInfo.name);
+			logger.info("IsDebuggable:" + String.valueOf(isDebug(context)));
+
+		} catch (NameNotFoundException e) {
+			logger.warn("writeApplicationInfo failed.", e);
+		}
+	}
+
+	public static boolean isDebug( Context context ) {
+	    PackageManager pm = context.getPackageManager();
+	    ApplicationInfo ai = new ApplicationInfo();
+	    try {
+	        ai = pm.getApplicationInfo( context.getPackageName(), 0 );
+	    } catch( NameNotFoundException e ) {
+	        ai = null;
+	        return false;
+	    }
+	    if( (ai.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE ) {
+	        return true;
+	    }
+	    return false;
 	}
 
 	static private String format(String tag, String msg) {
