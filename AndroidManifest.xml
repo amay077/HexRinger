@@ -13,6 +13,7 @@
         <receiver android:name=".AlarmBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.amay077.android.hexringer.ALARM" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <uses-library android:name="com.google.android.maps" />
