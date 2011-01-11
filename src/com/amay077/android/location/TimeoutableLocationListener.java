@@ -15,7 +15,7 @@ public class TimeoutableLocationListener implements LocationListener {
 	protected LocationManager locaMan = null;
 
 	public TimeoutableLocationListener(LocationManager locaMan, long timeOutMS, final TimeoutLisener timeoutListener) {
-		Log.d("TimeoutableLocationListener.ctor", "called.");
+		Log.d("this.getClass().getSimpleName()", "ctor called.");
 		this.locaMan  = locaMan;
 		timerTimeout.schedule(new TimerTask() {
 
@@ -27,13 +27,13 @@ public class TimeoutableLocationListener implements LocationListener {
 				stopLocationUpdateAndTimer();
 			}
 		}, timeOutMS);
-		Log.d("TimeoutableLocationListener.timerTimeout", "started.");
+		Log.d("this.getClass().getSimpleName()", "timer started.");
 	}
 
 
 //	@Override
 	public void onLocationChanged(Location location) {
-		Log.d("TimeoutableLocationListener.onLocationChanged", "called.");
+		Log.d("this.getClass().getSimpleName()", "onLocationChanged called.");
 		stopLocationUpdateAndTimer();
 	}
 
@@ -47,12 +47,12 @@ public class TimeoutableLocationListener implements LocationListener {
 	public void onStatusChanged(String s, int i, Bundle bundle) { }
 
 	private void stopLocationUpdateAndTimer() {
-		Log.d("TimeoutableLocationListener.stopLocationUpdateAndTimer", "called.");
 		locaMan.removeUpdates(this);
 
 		timerTimeout.cancel();
 		timerTimeout.purge();
 		timerTimeout = null;
+		Log.d("this.getClass().getSimpleName()", "timer stopped.");
 	}
 
 	public interface TimeoutLisener {

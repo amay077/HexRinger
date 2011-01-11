@@ -29,7 +29,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
-    	Log.d("AlarmBroadcastReceiver.onReceive", "called.");
+		Log.d(this.getClass().getSimpleName(), "onReceive called.");
+
     	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
 
 		try {
@@ -39,7 +40,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);
 			String buf = preference.getString(Const.PREF_KEY_WATCH_HEXES, null);
 
-			Log.d("AlarmBroadcastReceiver.onReceive", Const.PREF_KEY_WATCH_HEXES + " = " + buf);
+			Log.d(this.getClass().getSimpleName(), "onReceive " + Const.PREF_KEY_WATCH_HEXES + " = " + buf);
 
 			String[] watchHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
 			if (watchHexes == null || watchHexes.length == 0){
@@ -52,17 +53,17 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	        String action = intent.getAction();
 	        if (action.equals(Const.ACTION_HEXRINGAR_ALARM)) { // from AlarmManager
 	        	// main sequence
-	        	startHexEnterLeaveNotify(watchHexes);
+	        	beginHexEnterLeaveNotify(watchHexes);
 
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
 	        	// TODO: Need configuration
 				Const.setAlarmManager(context);
 	        } else {
-	        	Log.w("AlarmBroadcastReceiver.onReceive", "not support intent action:" + action);
+				Log.w(this.getClass().getSimpleName(), "onReceive " + "not support intent action:" + action);
 	        }
 		} catch (Exception exp) {
-			Log.w("AlarmBroadcastReceiver.onReceive", "failed.", exp);
+			Log.w(this.getClass().getSimpleName(), "onReceive failed.", exp);
 		} finally {
 			// Set next Alarm to AlarmManager
 			Const.setAlarmManager(context);
@@ -70,8 +71,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		}
 	}
 
-	private void startHexEnterLeaveNotify(String[] watchHexes) {
-		Log.d("AlarmBroadcastReceiver.startHexEnterLeaveNotify", "called.");
+	private void beginHexEnterLeaveNotify(String[] watchHexes) {
+		Log.d(this.getClass().getSimpleName(), "startHexEnterLeaveNotify called.");
 		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 
 		locaMan.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_MS, 0,
@@ -87,15 +88,19 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	}
 
 	public void onEnter(String enterHex) {
-		Log.d("AlarmBroadcastReceiver.onEnter", enterHex);
-    	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
-		audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-		writeLastHexToPreference(enterHex);
-		Log.d("AlarmBroadcastReceiver.onEnter", "set ringermode normal.");
+		try {
+			Log.d(this.getClass().getSimpleName(), "onEnter " + enterHex);
+	    	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
+			audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+			writeLastHexToPreference(enterHex);
+			Log.d("AlarmBroadcastReceiver.onEnter", "set ringermode normal.");
+		} catch (Exception e) {
+			Log.e(this.getClass().getSimpleName(), "onEnter failed.", e);
+		}
 	}
 
 	public void onLeave(String leaveHex) {
-		Log.d("AlarmBroadcastReceiver.onLeave", leaveHex);
+		Log.d(this.getClass().getSimpleName(), "onLeave " + leaveHex);
     	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 		writeLastHexToPreference(null);

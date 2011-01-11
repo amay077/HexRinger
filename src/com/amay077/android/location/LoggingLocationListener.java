@@ -12,7 +12,7 @@ public class LoggingLocationListener extends TimeoutableLocationListener {
 	private static TimeoutLisener timeoutListener = new TimeoutLisener() {
 
 		public void onTimeouted(LocationListener sender) {
-			Log.d("LoggingLocationListener.onTimeouted", "called.");
+			Log.d("this.getClass().getSimpleName()", "onTimeouted called.");
 		}
 	};
 
@@ -37,6 +37,6 @@ public class LoggingLocationListener extends TimeoutableLocationListener {
 		builder.append(",");
 		builder.append(location.getTime());
 
-		Log.d("LoggingLocationListener.onLocationChanged", builder.toString());
+		Log.d("this.getClass().getSimpleName()", "onLocationChanged " + builder.toString());
 	}
 }
