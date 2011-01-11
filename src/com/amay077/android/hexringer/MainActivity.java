@@ -41,7 +41,7 @@ public class MainActivity extends MapActivity {
     private View.OnClickListener buttonStartMonitoring_onClick = new View.OnClickListener() {
 
         public void onClick(View v) {
-            Log.d("MainActivity", "buttonStartMonitoring_onClick called.");
+            Log.d(this.getClass().getSimpleName(), "buttonStartMonitoring_onClick called.");
 
             // TODO : Is selecting Hex?
         	Set<String> watchHexesSet = watchHexOverlay.getSelectedGeoHexCodes();
@@ -62,7 +62,7 @@ public class MainActivity extends MapActivity {
     private View.OnClickListener buttonStopMonitoring_onClick = new View.OnClickListener() {
 
         public void onClick(View v) {
-            Log.d("MainActivity", "buttonStopMonitoring_onClick called.");
+            Log.d(this.getClass().getSimpleName(), "buttonStopMonitoring_onClick called.");
         	Const.cancelAlarmManager(MainActivity.this);
 
             Editor editor = preference.edit();
@@ -78,7 +78,7 @@ public class MainActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Log.d("MainActivity", "onCreate called.");
+        Log.d(this.getClass().getSimpleName(), "onCreate called.");
 
         initializeUI();
 
@@ -124,7 +124,7 @@ public class MainActivity extends MapActivity {
     // オプションメニューが最初に呼び出される時に1度だけ呼び出されます
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("MainActivity", "onCreateOptionsMenu called.");
+        Log.d(this.getClass().getSimpleName(), "onCreateOptionsMenu called.");
         // メニューアイテムを追加します
         menu.add(Menu.NONE, MENU_ID_START, Menu.NONE, "開始");
         menu.add(Menu.NONE, MENU_ID_CONFIG, Menu.NONE, "設定");
@@ -142,7 +142,7 @@ public class MainActivity extends MapActivity {
     // オプションメニューアイテムが選択された時に呼び出されます
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("MainActivity", "onOptionsItemSelected called.");
+        Log.d(this.getClass().getSimpleName(), "onOptionsItemSelected called.");
         boolean ret = true;
         switch (item.getItemId()) {
         default:
@@ -163,43 +163,43 @@ public class MainActivity extends MapActivity {
 
     @Override
     protected void onPause() {
-        Log.d("MainActivity", "onPause called.");
+        Log.d(this.getClass().getSimpleName(), "onPause called.");
     	super.onPause();
     }
 
     @Override
     protected void onResume() {
-        Log.d("MainActivity", "onResume called.");
+        Log.d(this.getClass().getSimpleName(), "onResume called.");
     	super.onResume();
     }
 
     @Override
     protected void onStart() {
-        Log.d("MainActivity", "onStart called.");
+        Log.d(this.getClass().getSimpleName(), "onStart called.");
     	super.onStart();
     }
 
     @Override
     protected void onRestart() {
-        Log.d("MainActivity", "onRestart called.");
+        Log.d(this.getClass().getSimpleName(), "onRestart called.");
     	super.onRestart();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d("MainActivity", "onRestoreInstanceState called.");
+        Log.d(this.getClass().getSimpleName(), "onRestoreInstanceState called.");
     	super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onStop() {
-        Log.d("MainActivity", "onStop called.");
+        Log.d(this.getClass().getSimpleName(), "onStop called.");
     	super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d("MainActivity", "onDestroy called.");
+        Log.d(this.getClass().getSimpleName(), "onDestroy called.");
     	super.onDestroy();
     }
 }

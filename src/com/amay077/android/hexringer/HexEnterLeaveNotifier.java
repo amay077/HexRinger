@@ -19,7 +19,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 	public HexEnterLeaveNotifier(LocationManager locaMan, long timeOutMS,
 			TimeoutLisener timeoutListener, String[] notifyHexes, String lastHex, HexEnterLeaveListender enterLeaveListener) {
 		super(locaMan, timeOutMS, timeoutListener);
-		Log.d("HexEnterLeaveNotifier.ctor", "called.");
+		Log.d(this.getClass().getSimpleName(), "ctor called.");
 
 		this.notifyHexes = notifyHexes;
 		this.lastHex = lastHex;
@@ -28,12 +28,12 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 
 	public void onLocationChanged(Location location) {
 		super.onLocationChanged(location);
-		Log.d("HexEnterLeaveNotifier.onLocationChanged", "called.");
+		Log.d(this.getClass().getSimpleName(), "onLocationChanged called.");
 		try {
 			// Valid location (WiFi location big changes, Hardware bug, etc...)
 			// if (!vaildLocation()) return;
 
-			Log.d("HexEnterLeaveNotifier.onLocationChanged",
+			Log.d(this.getClass().getSimpleName(), "onLocationChanged " +
 					"lat/long/accuracy:"
 					+ String.valueOf(location.getLatitude()) + "/"
 					+ String.valueOf(location.getLongitude()) + "/"
@@ -63,7 +63,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 				}
 			}
 		} catch (Exception e) {
-			Log.e("HexEnterLeaveNotifier.onLocationChanged", "failed.", e);
+			Log.e(this.getClass().getSimpleName(), "onLocationChanged failed.");
 		}
 	}
 
@@ -105,7 +105,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 					results);
 			float meterPerDegree = results[0] * 100f;
 
-			Log.d("HexEnterLeaveNotifier.getIntersectGeoHexes",
+			Log.d(this.getClass().getSimpleName(), "getIntersectGeoHexes " +
 					"radiumMetre/degree:" + String.valueOf(radius) + "/"
 					+ String.valueOf(radius / meterPerDegree));
 
