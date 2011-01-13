@@ -10,12 +10,27 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+/**
+ * TimeoutableLocationListner is implementation of LocationListener.
+ * If onLocationChanged isn't called within XX mili seconds, automatically remove listener.
+ *
+ * @author amay077 - http://twitter.com/amay077
+ *
+ */
 public class TimeoutableLocationListener implements LocationListener {
 	protected Timer timerTimeout = new Timer();
 	protected LocationManager locaMan = null;
 
-	public TimeoutableLocationListener(LocationManager locaMan, long timeOutMS, final TimeoutLisener timeoutListener) {
-		Log.d("this.getClass().getSimpleName()", "ctor called.");
+	/**
+	 * Initialize instance.
+	 *
+	 * @param locaMan the base of LocationManager, can't set null.
+	 * @param timeOutMS timeout elapsed (mili seconds)
+	 * @param timeoutListener if timeout, call onTimeouted method of this.
+	 */
+	public TimeoutableLocationListener(LocationManager locaMan, long timeOutMS,
+			final TimeoutLisener timeoutListener) {
+		Log.d(this.getClass().getSimpleName(), "ctor called.");
 		this.locaMan  = locaMan;
 		timerTimeout.schedule(new TimerTask() {
 
@@ -27,13 +42,18 @@ public class TimeoutableLocationListener implements LocationListener {
 				stopLocationUpdateAndTimer();
 			}
 		}, timeOutMS);
-		Log.d("this.getClass().getSimpleName()", "timer started.");
+		Log.d(this.getClass().getSimpleName(), "timer started.");
 	}
 
 
+	/***
+	 * Location callback.
+	 *
+	 * If override on your concrete class, must call base.onLocation().
+	 */
 //	@Override
 	public void onLocationChanged(Location location) {
-		Log.d("this.getClass().getSimpleName()", "onLocationChanged called.");
+		Log.d(this.getClass().getSimpleName(), "onLocationChanged called.");
 		stopLocationUpdateAndTimer();
 	}
 
@@ -52,7 +72,7 @@ public class TimeoutableLocationListener implements LocationListener {
 		timerTimeout.cancel();
 		timerTimeout.purge();
 		timerTimeout = null;
-		Log.d("this.getClass().getSimpleName()", "timer stopped.");
+		Log.d(this.getClass().getSimpleName(), "timer stopped.");
 	}
 
 	public interface TimeoutLisener {
