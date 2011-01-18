@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Environment;
+import android.text.format.DateFormat;
 
 import com.google.code.microlog4android.Logger;
 import com.google.code.microlog4android.LoggerFactory;
@@ -19,7 +20,8 @@ import com.google.code.microlog4android.format.PatternFormatter;
 public class Log {
 
 	static private Logger logger = LoggerFactory.getLogger();
-	static private String LOGFILE_PATH = "/HexRinger/log.txt";
+	static private String LOGFILE_PATH = "/HexRinger/log"
+		+ DateFormat.format("yyyyMMdd", System.currentTimeMillis()) + ".txt";
 	static private boolean isInitialized = false;
 
 	static private void initialize() {
