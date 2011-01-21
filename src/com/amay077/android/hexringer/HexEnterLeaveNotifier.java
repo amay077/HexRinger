@@ -54,6 +54,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			} else {
 				if (lastHex.equals(hitHex)) {
 					// In to in. Do nothing.
+					Log.e(this.getClass().getSimpleName(), "onLocationChanged still in hex:" + hitHex);
 				} else if (hitHex == null) {
 					// In to out. Leave.
 					leaveHex(lastHex);
