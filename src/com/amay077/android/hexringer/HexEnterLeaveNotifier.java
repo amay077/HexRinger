@@ -27,9 +27,10 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 	}
 
 	public void onLocationChanged(Location location) {
-		super.onLocationChanged(location);
-		Log.d(this.getClass().getSimpleName(), "onLocationChanged called.");
 		try {
+			super.onLocationChanged(location);
+			Log.d(this.getClass().getSimpleName(), "onLocationChanged called.");
+
 			// Valid location (WiFi location big changes, Hardware bug, etc...)
 			// if (!vaildLocation()) return;
 

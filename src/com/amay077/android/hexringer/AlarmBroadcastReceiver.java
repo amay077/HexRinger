@@ -29,12 +29,11 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(this.getClass().getSimpleName(), "onReceive called.");
-
-    	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
-
 		try {
-			this.context = context;
+			Log.d(this.getClass().getSimpleName(), "onReceive called.");
+	    	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
+
+	    	this.context = context;
 
 			preference = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);

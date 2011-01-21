@@ -95,64 +95,109 @@ public class Log {
 
     public static int d(String tag, String msg)
     {
-    	initialize();
-        logger.debug(format(tag, msg));
-        return 0;
+    	try {
+        	initialize();
+            logger.debug(format(tag, msg));
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "d failed.", e);
+			return 0;
+		}
     }
 
     public static int d(String tag, String msg, Throwable tr)
     {
-    	initialize();
-        logger.debug(format(tag, msg), tr);
-        return 0;
+    	try {
+        	initialize();
+            logger.debug(format(tag, msg), tr);
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "d failed.", e);
+			return 0;
+		}
     }
 
     public static int i(String tag, String msg)
     {
-    	initialize();
-        logger.info(format(tag, msg));
-        return 0;
+    	try {
+        	initialize();
+            logger.info(format(tag, msg));
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "i failed.", e);
+			return 0;
+		}
     }
 
     public static int i(String tag, String msg, Throwable tr)
     {
-    	initialize();
-        logger.info(format(tag, msg), tr);
-        return 0;
+    	try {
+        	initialize();
+            logger.info(format(tag, msg), tr);
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "i failed.", e);
+			return 0;
+		}
     }
 
     public static int w(String tag, String msg)
     {
-    	initialize();
-        logger.warn(format(tag, msg));
-        return 0;
+    	try {
+        	initialize();
+            logger.warn(format(tag, msg));
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "w failed.", e);
+			return 0;
+		}
     }
 
     public static int w(String tag, String msg, Throwable tr)
     {
-    	initialize();
-        logger.warn(format(tag, msg), tr);
-        return 0;
+    	try {
+        	initialize();
+            logger.warn(format(tag, msg), tr);
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "w failed.", e);
+			return 0;
+		}
     }
 
     public static int w(String tag, Throwable tr)
     {
-    	initialize();
-        logger.warn(format(tag, ""), tr);
-        return 0;
+    	try {
+        	initialize();
+            logger.warn(format(tag, ""), tr);
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "w failed.", e);
+			return 0;
+		}
     }
 
     public static int e(String tag, String msg)
     {
-    	initialize();
-        logger.error(format(tag, msg));
-        return 0;
+    	try {
+        	initialize();
+            logger.error(format(tag, msg));
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "e failed.", e);
+			return 0;
+		}
     }
 
     public static int e(String tag, String msg, Throwable tr)
     {
-    	initialize();
-    	logger.error(format(tag, msg), tr);
-        return 0;
+    	try {
+        	initialize();
+        	logger.error(format(tag, msg), tr);
+            return 0;
+		} catch (Exception e) {
+			Log.e("Log", "e failed.", e);
+			return 0;
+		}
     }
 }

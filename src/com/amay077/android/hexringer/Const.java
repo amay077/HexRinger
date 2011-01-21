@@ -3,11 +3,12 @@ package com.amay077.android.hexringer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import com.amay077.android.logging.Log;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class Const {
 	// Intent Action
@@ -27,40 +28,49 @@ public class Const {
 
 	/** AlarmManager にインテント発行を設定する（今からｎ分後） */
 	static public void setAlarmManager(Context context) {
-		Intent intent = new Intent(context,
-				AlarmBroadcastReceiver.class);
+		try {
+			Intent intent = new Intent(context,
+					AlarmBroadcastReceiver.class);
 
-		intent.setAction(Const.ACTION_HEXRINGAR_ALARM);
+			intent.setAction(Const.ACTION_HEXRINGAR_ALARM);
 
-		PendingIntent sender = PendingIntent.getBroadcast(
-				context, 0, intent, 0);
+			PendingIntent sender = PendingIntent.getBroadcast(
+					context, 0, intent, 0);
 
-		AlarmManager alarmManager = (AlarmManager) (context
-				.getSystemService(Context.ALARM_SERVICE));
+			AlarmManager alarmManager = (AlarmManager) (context
+					.getSystemService(Context.ALARM_SERVICE));
 
-		// 5分後の時間を設定
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(System.currentTimeMillis());
-		cal.add(Calendar.MINUTE, ALARM_INTERVAL_MINUTES);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+			// 5分後の時間を設定
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(System.currentTimeMillis());
+			cal.add(Calendar.MINUTE, ALARM_INTERVAL_MINUTES);
+			alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
 
-		Log.d("Const.setAlarmManager", "Alarm set at " + new SimpleDateFormat().format(cal.getTime()));
+			Log.d("Const", "setAlarmManager Alarm set at " + new SimpleDateFormat().format(cal.getTime()));
+		} catch (Exception e) {
+			// TODO:PREF_KEY_ALARM_ENABLED を false にする
+			Log.e("Const", "setAlarmManager Alarm set failed.", e);
+		}
 	}
 
 	static public void cancelAlarmManager(Context context) {
-		Intent intent = new Intent(context,
-				AlarmBroadcastReceiver.class);
+		try {
+			Intent intent = new Intent(context,
+					AlarmBroadcastReceiver.class);
 
-		intent.setAction(Const.ACTION_HEXRINGAR_ALARM);
+			intent.setAction(Const.ACTION_HEXRINGAR_ALARM);
 
-		PendingIntent sender = PendingIntent.getBroadcast(
-				context, 0, intent, 0);
+			PendingIntent sender = PendingIntent.getBroadcast(
+					context, 0, intent, 0);
 
-		AlarmManager alarmManager = (AlarmManager) (context
-				.getSystemService(Context.ALARM_SERVICE));
+			AlarmManager alarmManager = (AlarmManager) (context
+					.getSystemService(Context.ALARM_SERVICE));
 
-		alarmManager.cancel(sender);
+			alarmManager.cancel(sender);
 
-		Log.d("Const.setAlarmManager", "Alarm canceled.");
+			Log.d("Const", "setAlarmManager Alarm canceled.");
+		} catch (Exception e) {
+			Log.e("Const", "setAlarmManager Alarm cancel failed.", e);
+		}
 	}
 }
