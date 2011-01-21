@@ -52,7 +52,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 					enterHex(hitHex);
 				}
 			} else {
-				if (lastHex == hitHex) {
+				if (lastHex.equals(hitHex)) {
 					// In to in. Do nothing.
 				} else if (hitHex == null) {
 					// In to out. Leave.
