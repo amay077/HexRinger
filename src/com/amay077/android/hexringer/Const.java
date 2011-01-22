@@ -20,8 +20,10 @@ public class Const {
 //	static public final String PREF_KEY_LAST_HEX = "LAST_HEX";
 
 	/** アラームの実行間隔（分） */
-//	static public final short ALARM_INTERVAL_MINUTES = 5;
-    /** 初回測位までのタイムアウト時間（ミリ秒） */
+//	static public final int DEFAULT_ALARM_INTERVAL_MINUTES = 10;
+//	static public final int DEFAULT_MANNERMODE_TYPE = AudioManager.RINGER_MODE_SILENT;
+
+	/** 初回測位までのタイムアウト時間（ミリ秒） */
 	static public final short LOCATION_REQUEST_TIMEOUT_MS = 30000;
 	/** 配列を文字列化する時の区切り文字 */
 	public static final String ARRAY_SPLITTER = ",";
@@ -46,7 +48,7 @@ public class Const {
 			cal.add(Calendar.MINUTE, delay);
 			alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
 
-			Log.d("Const", "setNextAlarm Alarm set at " + DateFormat.format("yyyy/MM/dd hh:mm:ss", cal.getTime()));
+			Log.d("Const", "setNextAlarm Alarm set at " + DateFormat.format("yyyy/MM/dd HH:mm:ss", cal.getTime()));
 		} catch (Exception e) {
 			// TODO:PREF_KEY_ALARM_ENABLED を false にする
 			Log.e("Const", "setNextAlarm Alarm set failed.", e);

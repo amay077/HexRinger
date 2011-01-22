@@ -56,7 +56,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
 	        	// TODO: Need configuration
-				Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key, 5));
+				Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
+						context.getString(R.string.pref_watchinterval_default)));
 	        } else {
 				Log.w(this.getClass().getSimpleName(), "onReceive " + "not support intent action:" + action);
 	        }
@@ -64,7 +65,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			Log.w(this.getClass().getSimpleName(), "onReceive failed.", exp);
 		} finally {
 			// Set next Alarm to AlarmManager
-			Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key, 5));
+			Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
+					context.getString(R.string.pref_watchinterval_default)));
 			setResult(Activity.RESULT_OK, null, null);
 		}
 	}
@@ -100,7 +102,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	public void onLeave(String leaveHex) {
 		Log.d(this.getClass().getSimpleName(), "onLeave " + leaveHex);
     	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
-		audioMan.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+		audioMan.setRingerMode(pref.getAsInt(R.string.pref_mannermode_type_key,
+				context.getString(R.string.pref_mannermode_type_default)));
 		writeLastHexToPreference(null);
 		Log.d("AlarmBroadcastReceiver.onLeave", "set ringermode vibrate.");
 	}

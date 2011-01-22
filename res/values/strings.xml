@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_watchinterval_summary">HexRinger が動作する間隔</string>
     <string name="pref_watchinterval_title">更新間隔</string>
+    <string name="pref_watchinterval_summary">HexRinger が動作する間隔</string>
     <string name="pref_watchinterval_key">WATCH_INTERVAL_MIN</string>
+    <string name="pref_watchinterval_default">10</string>
+
+    <string name="pref_mannermode_type_title">マナーモードの種類</string>
+    <string name="pref_mannermode_type_summary">マナーモードの種類を選択</string>
+    <string name="pref_mannermode_type_key">MANNERMODE_TYPE</string>
+    <string name="pref_mannermode_type_default">0</string>
+
 
     <string name="pref_alarm_enabled_key">ALARM_ENABLED</string>
 
