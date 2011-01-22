@@ -2,15 +2,14 @@ package com.amay077.android.hexringer;
 
 import com.amay077.android.hexringer.HexEnterLeaveNotifier.HexEnterLeaveListender;
 import com.amay077.android.logging.Log;
+import com.amay077.android.preference.PreferenceWrapper;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 /** Broadcast Receiver */
@@ -18,7 +17,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	implements HexEnterLeaveListender {
 	static private final int MIN_TIME_MS = 1000;
 
-	private SharedPreferences preference = null;
+	private PreferenceWrapper pref = null;
 	private String lastHex = null;
 	private AudioManager audioMan = null;
 	private LocationManager locaMan = null;
@@ -35,15 +34,15 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 	    	this.context = context;
 
-			preference = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-			lastHex = preference.getString(Const.PREF_KEY_LAST_HEX, null);
-			String buf = preference.getString(Const.PREF_KEY_WATCH_HEXES, null);
+	    	pref = new PreferenceWrapper(context.getApplicationContext());
+			lastHex = pref.getString(R.string.pref_last_hex_key, null);
+			String buf = pref.getString(R.string.pref_watch_hexes_key, null);
 
-			Log.d(this.getClass().getSimpleName(), "onReceive " + Const.PREF_KEY_WATCH_HEXES + " = " + buf);
+			Log.d(this.getClass().getSimpleName(), "onReceive watch hexes = " + buf);
 
 			String[] watchHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
 			if (watchHexes == null || watchHexes.length == 0){
-	        	Log.w("AlarmBroadcastReceiver.onReceive", Const.PREF_KEY_WATCH_HEXES + " not set.");
+	        	Log.w("AlarmBroadcastReceiver.onReceive", "watch hexes not set.");
 	        	return;
 			}
 
@@ -57,7 +56,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
 	        	// TODO: Need configuration
-				Const.setAlarmManager(context);
+				Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key, 5));
 	        } else {
 				Log.w(this.getClass().getSimpleName(), "onReceive " + "not support intent action:" + action);
 	        }
@@ -65,7 +64,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			Log.w(this.getClass().getSimpleName(), "onReceive failed.", exp);
 		} finally {
 			// Set next Alarm to AlarmManager
-			Const.setAlarmManager(context);
+			Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key, 5));
 			setResult(Activity.RESULT_OK, null, null);
 		}
 	}
@@ -107,13 +106,11 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	}
 
 	private void writeLastHexToPreference(String hitHex) {
-		Editor editor = preference.edit();
 		if (hitHex == null) {
-			editor.remove(Const.PREF_KEY_LAST_HEX);
+			pref.remove(R.string.pref_last_hex_key);
 		} else {
-			editor.putString(Const.PREF_KEY_LAST_HEX, hitHex);
+			pref.saveString(R.string.pref_last_hex_key, hitHex);
 		}
-		editor.commit();
 	}
 
 	public static class StringUtil {
@@ -149,4 +146,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		}
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		Log.d(this.getClass().getSimpleName(), "finalize called.");
+		super.finalize();
+	}
 }

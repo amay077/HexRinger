@@ -6,14 +6,13 @@ import com.amay077.android.hexringer.R;
 import com.amay077.android.logging.Log;
 import com.amay077.android.maps.GeoHexOverlay;
 import com.amay077.android.maps.MyLocationOverlayEx;
+import com.amay077.android.preference.PreferenceWrapper;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +26,7 @@ public class MainActivity extends MapActivity {
     private static final int MENU_ID_CONFIG = (Menu.FIRST + 2);
 
     // Fields
-    private SharedPreferences preference = null;
+    private PreferenceWrapper pref = null;
 
     // UI components
     private MapView mapview = null;
@@ -48,14 +47,12 @@ public class MainActivity extends MapActivity {
         	String[] watchHexes = new String[watchHexesSet.size()];
         	watchHexesSet.toArray(watchHexes);
 
-            Editor editor = preference.edit();
-            editor.putBoolean(Const.PREF_KEY_ALARM_ENABLED, true);
-            editor.putString(Const.PREF_KEY_WATCH_HEXES,
+            pref.saveBoolean(R.string.pref_alarm_enabled_key, true);
+            pref.saveString(R.string.pref_watch_hexes_key,
             		StringUtil.fromArray(watchHexes, Const.ARRAY_SPLITTER));
-            editor.commit();
 
-            Const.setAlarmManager(MainActivity.this);
-            toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
+            Const.setNextAlarm(MainActivity.this, pref.getAsInt(R.string.pref_watchinterval_key, 5));
+            toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
         }
     };
 
@@ -65,10 +62,8 @@ public class MainActivity extends MapActivity {
             Log.d(this.getClass().getSimpleName(), "buttonStopMonitoring_onClick called.");
         	Const.cancelAlarmManager(MainActivity.this);
 
-            Editor editor = preference.edit();
-            editor.putBoolean(Const.PREF_KEY_ALARM_ENABLED, false);
-            editor.commit();
-            toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
+            pref.saveBoolean(R.string.pref_alarm_enabled_key, false);
+            toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
         }
     };
 
@@ -87,12 +82,12 @@ public class MainActivity extends MapActivity {
         mapview.getOverlays().add(watchHexOverlay);
         myLocOverlay = new MyLocationOverlayEx(this, mapview);
         mapview.getOverlays().add(myLocOverlay);
-        preference = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        pref = new PreferenceWrapper(this.getApplicationContext());
 
-        toggleMonitoringButton(preference.getBoolean(Const.PREF_KEY_ALARM_ENABLED, false));
+        toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
 
         Set<String> watchHexes = watchHexOverlay.getSelectedGeoHexCodes();
-        String watchHexesStr = preference.getString(Const.PREF_KEY_WATCH_HEXES, null);
+        String watchHexesStr = pref.getString(R.string.pref_watch_hexes_key, null);
         if (!StringUtil.isNullOrEmpty(watchHexesStr)) {
 	        String[] array = StringUtil.toArray(watchHexesStr, Const.ARRAY_SPLITTER);
 	        for (String string : array) {
@@ -156,7 +151,12 @@ public class MainActivity extends MapActivity {
             ret = true;
             break;
         case MENU_ID_CONFIG:
-            Toast.makeText(this, "設定画面を表示", Toast.LENGTH_SHORT).show();
+
+        	String test = pref.getString(R.string.pref_watchinterval_key, "def");
+
+            Toast.makeText(this, test, Toast.LENGTH_SHORT).show();
+        	Intent intent = new Intent(this, HexRingerPreferenceActivity.class);
+        	startActivity(intent);
             ret = true;
             break;
         }
@@ -205,4 +205,10 @@ public class MainActivity extends MapActivity {
     	super.onDestroy();
         Log.d(getApplication().getPackageName(), "finished.");
     }
+
+	@Override
+	protected void finalize() throws Throwable {
+		Log.d(this.getClass().getSimpleName(), "finalize called.");
+		super.finalize();
+	}
 }

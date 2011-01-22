@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+    <string name="pref_watchinterval_summary">HexRinger が動作する間隔</string>
+    <string name="pref_watchinterval_title">更新間隔</string>
+    <string name="pref_watchinterval_key">WATCH_INTERVAL_MIN</string>
+
+    <string name="pref_alarm_enabled_key">ALARM_ENABLED</string>
+
+    <string name="pref_watch_hexes_key">WATCH_HEXES</string>
+
+    <string name="pref_last_hex_key">LAST_HEX</string>
+
     <string name="app_name">HexRinger</string>
 </resources>
