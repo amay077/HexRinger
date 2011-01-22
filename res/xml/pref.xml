@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-<ListPreference android:summary="@string/pref_watchinterval_summary" android:title="@string/pref_watchinterval_title" android:key="@string/pref_watchinterval_key" android:entryValues="@array/pref_watchinterval_entryvalues" android:entries="@array/pref_watchinterval_entries"></ListPreference>
+  <ListPreference
+    android:summary="@string/pref_watchinterval_summary"
+    android:title="@string/pref_watchinterval_title"
+    android:key="@string/pref_watchinterval_key"
+    android:entryValues="@array/pref_watchinterval_entryvalues"
+    android:entries="@array/pref_watchinterval_entries" android:defaultValue="@string/pref_watchinterval_default"/>
+  <ListPreference
+    android:summary="@string/pref_mannermode_type_summary"
+    android:title="@string/pref_mannermode_type_title"
+    android:key="@string/pref_mannermode_type_key"
+    android:entryValues="@array/pref_mannermode_type_entryvalues"
+    android:entries="@array/pref_mannermode_type_entries" android:defaultValue="@string/pref_mannermode_type_default"/>
 </PreferenceScreen>

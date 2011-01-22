@@ -51,7 +51,9 @@ public class MainActivity extends MapActivity {
             pref.saveString(R.string.pref_watch_hexes_key,
             		StringUtil.fromArray(watchHexes, Const.ARRAY_SPLITTER));
 
-            Const.setNextAlarm(MainActivity.this, pref.getAsInt(R.string.pref_watchinterval_key, 5));
+            Const.setNextAlarm(MainActivity.this,
+            		pref.getAsInt(R.string.pref_watchinterval_key,
+            				getString(R.string.pref_watchinterval_default)));
             toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
         }
     };

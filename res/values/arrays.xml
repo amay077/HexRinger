@@ -16,4 +16,12 @@
   <item>60</item>
   <item>120</item>
 </string-array>
+<string-array name="pref_mannermode_type_entries">
+  <item>バイブレーション</item>
+  <item>サイレントモード</item>
+</string-array>
+<string-array name="pref_mannermode_type_entryvalues">
+  <item>1</item>
+  <item>0</item>
+</string-array>
 </resources>

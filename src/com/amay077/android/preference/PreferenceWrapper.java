@@ -5,14 +5,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class PreferenceWrapper {
 	private SharedPreferences pref = null;
-//	private Context context = null;
 	private Resources res = null;
 
 	public PreferenceWrapper(Context context) {
-//		this.context = context;
 		res = context.getResources();
 		pref = PreferenceManager.getDefaultSharedPreferences(context);
 	}
@@ -21,8 +20,13 @@ public class PreferenceWrapper {
 		return pref.getString(res.getString(resID), defaultValue);
 	}
 
-	public int getAsInt(int resID, int defaultValue) {
-		return Integer.parseInt(pref.getString(res.getString(resID), String.valueOf(defaultValue)));
+	public int getAsInt(int resID, String defaultValue) {
+		try {
+			return Integer.parseInt(pref.getString(res.getString(resID), defaultValue));
+		} catch (Exception e) {
+			Log.w(this.getClass().getSimpleName(), "getAsInt failed.", e);
+			return 0;
+		}
 	}
 
 	public boolean getBoolean(int resID, boolean defaultValue) {
