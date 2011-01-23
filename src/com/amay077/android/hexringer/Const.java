@@ -1,5 +1,6 @@
 package com.amay077.android.hexringer;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.amay077.android.logging.Log;
@@ -8,7 +9,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.text.format.DateFormat;
 
 public class Const {
 	// Intent Action
@@ -48,7 +48,7 @@ public class Const {
 			cal.add(Calendar.MINUTE, delay);
 			alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
 
-			Log.d("Const", "setNextAlarm Alarm set at " + DateFormat.format("yyyy/MM/dd HH:mm:ss", cal.getTime()));
+			Log.d("Const", "setNextAlarm Alarm set at " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime()));
 		} catch (Exception e) {
 			// TODO:PREF_KEY_ALARM_ENABLED を false にする
 			Log.e("Const", "setNextAlarm Alarm set failed.", e);

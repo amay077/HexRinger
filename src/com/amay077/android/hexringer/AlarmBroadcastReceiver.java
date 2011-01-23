@@ -1,5 +1,11 @@
 package com.amay077.android.hexringer;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationContext;
+import twitter4j.conf.ConfigurationFactory;
+
 import com.amay077.android.hexringer.HexEnterLeaveNotifier.HexEnterLeaveListender;
 import com.amay077.android.logging.Log;
 import com.amay077.android.preference.PreferenceWrapper;
@@ -29,7 +35,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		try {
-			Log.d(this.getClass().getSimpleName(), "onReceive called.");
+			Log.d(this.getClass().getSimpleName(), "onReceive() called.");
 	    	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
 
 	    	this.context = context;
@@ -38,11 +44,11 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			lastHex = pref.getString(R.string.pref_last_hex_key, null);
 			String buf = pref.getString(R.string.pref_watch_hexes_key, null);
 
-			Log.d(this.getClass().getSimpleName(), "onReceive watch hexes = " + buf);
+			Log.d(this.getClass().getSimpleName(), "onReceive() watch hexes = " + buf);
 
 			String[] watchHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
 			if (watchHexes == null || watchHexes.length == 0){
-	        	Log.w("AlarmBroadcastReceiver.onReceive", "watch hexes not set.");
+	        	Log.w(this.getClass().getSimpleName(), "onReceive() watch hexes not set.");
 	        	return;
 			}
 
@@ -59,10 +65,10 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 				Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
 						context.getString(R.string.pref_watchinterval_default)));
 	        } else {
-				Log.w(this.getClass().getSimpleName(), "onReceive " + "not support intent action:" + action);
+	        	Log.w(this.getClass().getSimpleName(), "onReceive() " + "not support intent action:" + action);
 	        }
 		} catch (Exception exp) {
-			Log.w(this.getClass().getSimpleName(), "onReceive failed.", exp);
+			Log.w(this.getClass().getSimpleName(), "onReceive() failed.", exp);
 		} finally {
 			// Set next Alarm to AlarmManager
 			Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
@@ -72,7 +78,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	}
 
 	private void beginHexEnterLeaveNotify(String[] watchHexes) {
-		Log.d(this.getClass().getSimpleName(), "startHexEnterLeaveNotify called.");
+		Log.d(this.getClass().getSimpleName(), "beginHexEnterLeaveNotify() called.");
 		locaMan = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 
 		locaMan.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_MS, 0,
@@ -89,23 +95,44 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 	public void onEnter(String enterHex) {
 		try {
-			Log.d(this.getClass().getSimpleName(), "onEnter " + enterHex);
+			Log.d(this.getClass().getSimpleName(), "onEnter() " + enterHex);
 	    	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
 			audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 			writeLastHexToPreference(enterHex);
-			Log.d("AlarmBroadcastReceiver.onEnter", "set ringermode normal.");
+			Log.d(this.getClass().getSimpleName(), "onEnter() set ringermode normal.");
+
+			tweet("enter hex:" + enterHex + ". set ringermode normal. #HexRinger");
+
 		} catch (Exception e) {
-			Log.e(this.getClass().getSimpleName(), "onEnter failed.", e);
+			Log.e(this.getClass().getSimpleName(), "onEnter() failed.", e);
 		}
 	}
 
+	private void tweet(String message) {
+
+//		Configuration conf = ConfigurationContext.getInstance();
+//
+//
+//		Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(conf);
+//				"eIyOFT2k0p7YVGWhDFJJA", "8G3i98Q3f76SZ1SlkfN8ch8SX4QKWEIuNge6tQdHs");
+//
+//		try {
+//			twitter.updateStatus(message);
+//		} catch (Exception e) {
+//			Log.w(this.getClass().getSimpleName(), "tweet() failed.", e);
+//		}
+
+	}
+
 	public void onLeave(String leaveHex) {
-		Log.d(this.getClass().getSimpleName(), "onLeave " + leaveHex);
+		Log.d(this.getClass().getSimpleName(), "onLeave() " + leaveHex);
     	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(pref.getAsInt(R.string.pref_mannermode_type_key,
 				context.getString(R.string.pref_mannermode_type_default)));
 		writeLastHexToPreference(null);
-		Log.d("AlarmBroadcastReceiver.onLeave", "set ringermode vibrate.");
+		Log.d(this.getClass().getSimpleName(), "onLeave() set ringermode manner.");
+
+		tweet("leave hex:" + leaveHex + ". set ringermode manner. #HexRinger");
 	}
 
 	private void writeLastHexToPreference(String hitHex) {
@@ -151,7 +178,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 	@Override
 	protected void finalize() throws Throwable {
-		Log.d(this.getClass().getSimpleName(), "finalize called.");
+		Log.d(this.getClass().getSimpleName(), "finalize() called.");
 		super.finalize();
 	}
 }
