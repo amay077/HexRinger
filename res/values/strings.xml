@@ -16,6 +16,10 @@
     <string name="pref_watchinterval_key">PREF_WATCH_INTERVAL_MIN</string>
     <string name="pref_watchinterval_default">10</string>
 
+    <string name="pref_start_at_boot_title">端末の起動時に常駐</string>
+    <string name="pref_start_at_boot_key">PREF_ENABLE_START_AT_TIME</string>
+    <string name="pref_start_at_boot_default">0</string>
+
     <string name="pref_mannermode_type_title">マナーモードの種類</string>
     <string name="pref_mannermode_type_summary">マナーモードの種類を選択</string>
     <string name="pref_mannermode_type_key">PREF_MANNERMODE_TYPE</string>
