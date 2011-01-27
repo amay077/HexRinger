@@ -13,8 +13,15 @@
     android:title="@string/pref_mannermode_type_title"
     android:key="@string/pref_mannermode_type_key"
     android:entryValues="@array/pref_mannermode_type_entryvalues"
-    android:entries="@array/pref_mannermode_type_entries" android:defaultValue="@string/pref_mannermode_type_default"/>
-  <Preference android:key="@string/pref_twitter_key" android:title="@string/pref_twitter_title"></Preference>
+    android:entries="@array/pref_mannermode_type_entries"
+    android:defaultValue="@string/pref_mannermode_type_default"/>
+  <CheckBoxPreference
+    android:title="@string/pref_start_at_boot_title"
+    android:key="@string/pref_start_at_boot_key"
+    android:defaultValue="@string/pref_start_at_boot_default"/>
+  <Preference
+    android:key="@string/pref_twitter_key"
+    android:title="@string/pref_twitter_title"/>
 </PreferenceCategory>
 <PreferenceCategory android:title="@string/pref_category_outline"><Preference android:key="@string/pref_licence_key" android:title="@string/pref_licence_value" android:summary="@string/pref_licence_summary"></Preference>
 <com.amay077.android.preference.VersionPreference android:key="@string/pref_version_key" android:enabled="false" android:title="@string/pref_version_title"></com.amay077.android.preference.VersionPreference>
