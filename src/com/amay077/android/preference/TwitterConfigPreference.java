@@ -1,0 +1,271 @@
+package com.amay077.android.preference;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.http.AccessToken;
+
+import com.amay077.android.hexringer.Const;
+import com.amay077.android.hexringer.R;
+import com.amay077.android.twitter.AuthInfo;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.TypedArray;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.preference.DialogPreference;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class TwitterConfigPreference extends DialogPreference {
+    /**
+     * The edit text shown in the dialog.
+     */
+    private EditText editUserId = null;
+    private EditText editPassword = null;
+    private Button buttonAuth = null;
+    private Button buttonCancel = null;
+    private Button buttonUnauth = null;
+    private TextView textAnthorized = null;
+
+    private AuthInfo info = new AuthInfo("");
+
+    public TwitterConfigPreference(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+
+    	setDialogLayoutResource(R.layout.twitter_login);
+//    	setPositiveButtonText(android.R.string.ok);
+//        setNegativeButtonText(android.R.string.cancel);
+    }
+
+    public TwitterConfigPreference(Context context, AttributeSet attrs) {
+        this(context, attrs, 1);
+    }
+
+    public TwitterConfigPreference(Context context) {
+        this(context, null);
+    }
+
+    /**
+     * Saves the text to the {@link SharedPreferences}.
+     *
+     * @param text The text to save
+     */
+    public void setText(AuthInfo info) {
+        final boolean wasBlocking = shouldDisableDependents();
+
+        this.info = info;
+
+        persistString(info.toString());
+
+        final boolean isBlocking = shouldDisableDependents();
+        if (isBlocking != wasBlocking) {
+            notifyDependencyChange(isBlocking);
+        }
+    }
+
+    /**
+     * Gets the text from the {@link SharedPreferences}.
+     *
+     * @return The current preference value.
+     */
+    public AuthInfo getText() {
+        return this.info;
+    }
+
+    @Override
+    protected void onBindDialogView(View view) {
+        super.onBindDialogView(view);
+
+        editUserId = (EditText)view.findViewById(R.id.editTwitterUserID);
+        editPassword = (EditText)view.findViewById(R.id.editTwitterPassword);
+        buttonAuth = (Button)view.findViewById(R.id.btnAuth);
+        buttonUnauth = (Button)view.findViewById(R.id.btnUnauth);
+        buttonCancel = (Button)view.findViewById(R.id.btnCancel);
+        textAnthorized = (TextView)view.findViewById(R.id.textAuthorized);
+
+
+        AuthInfo info = getText();
+        boolean isAuthorized = !TextUtils.isEmpty(info.consumerToken);
+        if (isAuthorized) {
+        	editUserId.setEnabled(false);
+        	editPassword.setVisibility(View.GONE);
+        	buttonAuth.setVisibility(View.GONE);
+        	buttonUnauth.setVisibility(View.VISIBLE);
+        	textAnthorized.setVisibility(View.VISIBLE);
+        } else {
+        	editUserId.setEnabled(true);
+        	editPassword.setVisibility(View.VISIBLE);
+        	buttonAuth.setVisibility(View.VISIBLE);
+        	buttonUnauth.setVisibility(View.GONE);
+        	textAnthorized.setVisibility(View.GONE);
+        }
+
+        editUserId.setText(info.userId);
+
+        buttonAuth.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				// TODO: Twitter xAuth
+
+		        try {
+			        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
+			        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
+			        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
+
+			        TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
+			        Twitter twitter = twitterfactory.getInstance(
+			        		editUserId.getText().toString(),
+			        		editPassword.getText().toString());
+
+			        AccessToken token;
+		        	token = twitter.getOAuthAccessToken();
+
+		        	TwitterConfigPreference.this.info.consumerToken = token.getToken();
+		        	TwitterConfigPreference.this.info.consumerSecret = token.getTokenSecret();
+		        	TwitterConfigPreference.this.info.userId = editUserId.getText().toString();
+
+		        	TwitterConfigPreference.this.getDialog().dismiss();
+					onDialogClosed(true);
+		        } catch (Exception e) {
+
+		        }
+
+
+			}
+		});
+
+        buttonUnauth.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				// TODO: clear xAuth token
+
+				TwitterConfigPreference.this.info = new AuthInfo("");
+				TwitterConfigPreference.this.getDialog().dismiss();
+				onDialogClosed(true);
+			}
+		});
+
+        buttonCancel.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				TwitterConfigPreference.this.getDialog().dismiss();
+				onDialogClosed(false);
+			}
+		});
+    }
+
+    @Override
+    protected void onDialogClosed(boolean positiveResult) {
+        super.onDialogClosed(positiveResult);
+
+        if (positiveResult) {
+            if (callChangeListener(info.toString())) {
+                setText(info);
+            }
+        }
+    }
+
+    @Override
+    protected Object onGetDefaultValue(TypedArray a, int index) {
+        return a.getString(index);
+    }
+
+    @Override
+    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
+        setText(new AuthInfo(restoreValue ? getPersistedString(info.toString()) : (String) defaultValue));
+    }
+
+    @Override
+    public boolean shouldDisableDependents() {
+        return TextUtils.isEmpty(info.consumerToken) || super.shouldDisableDependents();
+    }
+
+    /**
+     * Returns the {@link EditText} widget that will be shown in the dialog.
+     *
+     * @return The {@link EditText} widget that will be shown in the dialog.
+     */
+    public EditText getEditText() {
+        return editUserId;
+    }
+
+//    /** @hide */
+//    @Override
+//    protected boolean needInputMethod() {
+//        // We want the input method to show, if possible, when dialog is displayed
+//        return true;
+//    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        final Parcelable superState = super.onSaveInstanceState();
+        if (isPersistent()) {
+            // No need to save instance state since it's persistent
+            return superState;
+        }
+
+        final SavedState myState = new SavedState(superState);
+        myState.text = getText();
+        return myState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state == null || !state.getClass().equals(SavedState.class)) {
+            // Didn't save state for us in onSaveInstanceState
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState myState = (SavedState) state;
+        super.onRestoreInstanceState(myState.getSuperState());
+        setText(myState.text);
+    }
+
+    private static class SavedState extends BaseSavedState {
+        AuthInfo text;
+
+        public SavedState(Parcel source) {
+            super(source);
+            text = new AuthInfo(source.readString());
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeString(text.toString());
+        }
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
+
+}
