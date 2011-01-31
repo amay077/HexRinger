@@ -14,6 +14,10 @@ public class Const {
 	// Intent Action
 	static public final String ACTION_HEXRINGAR_ALARM = "com.amay077.android.hexringer.ALARM";
 
+	static public final String TWITTER_CONSUMER_TOKEN = "eIyOFT2k0p7YVGWhDFJJA";
+    static public final String TWITTER_CONSUMER_SECRET = "8G3i98Q3f76SZ1SlkfN8ch8SX4QKWEIuNge6tQdHs";
+
+
 	// Preference
 //	static public final String PREF_KEY_ALARM_ENABLED = "ALARM_ENABLED";
 //	static public final String PREF_KEY_WATCH_HEXES = "WATCH_HEXES";

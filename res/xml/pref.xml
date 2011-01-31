@@ -18,8 +18,9 @@
   <CheckBoxPreference
     android:title="@string/pref_start_at_boot_title"
     android:key="@string/pref_start_at_boot_key"
-    android:defaultValue="@string/pref_start_at_boot_default"/>
-  <Preference
+    android:defaultValue="@string/pref_start_at_boot_default"
+    android:summary="@string/pref_start_at_boot_summary"/>
+  <com.amay077.android.preference.TwitterConfigPreference
     android:key="@string/pref_twitter_key"
     android:title="@string/pref_twitter_title"/>
 </PreferenceCategory>

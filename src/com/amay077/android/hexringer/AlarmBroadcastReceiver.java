@@ -2,14 +2,13 @@ package com.amay077.android.hexringer;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationContext;
-import twitter4j.conf.ConfigurationFactory;
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.http.AccessToken;
 
 import com.amay077.android.hexringer.HexEnterLeaveNotifier.HexEnterLeaveListender;
 import com.amay077.android.logging.Log;
 import com.amay077.android.preference.PreferenceWrapper;
-
+import com.amay077.android.twitter.AuthInfo;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -110,18 +109,19 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 	private void tweet(String message) {
 
-//		Configuration conf = ConfigurationContext.getInstance();
-//
-//
-//		Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(conf);
-//				"eIyOFT2k0p7YVGWhDFJJA", "8G3i98Q3f76SZ1SlkfN8ch8SX4QKWEIuNge6tQdHs");
-//
-//		try {
-//			twitter.updateStatus(message);
-//		} catch (Exception e) {
-//			Log.w(this.getClass().getSimpleName(), "tweet() failed.", e);
-//		}
+		try	{
+	        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
+	        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
+	        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
+			TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
+			AuthInfo info = new AuthInfo(context.getString(R.string.pref_twitter_key));
+	        Twitter twitter = twitterfactory.getOAuthAuthorizedInstance(
+	        		new AccessToken(info.consumerToken, info.consumerSecret));
 
+	        twitter.updateStatus(message);
+		} catch (Exception e) {
+			Log.w(this.getClass().getSimpleName(), "tweet() failed.", e);
+		}
 	}
 
 	public void onLeave(String leaveHex) {

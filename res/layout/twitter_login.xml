@@ -4,6 +4,7 @@
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
+  android:padding="10dip"
   >
   <EditText
     android:text=""
@@ -13,18 +14,59 @@
     android:hint="@string/ui_twitter_userid_hint"
     android:inputType="text"
   />
-  <EditText
-    android:text=""
-    android:id="@+id/editTwitterPassword"
+  <LinearLayout
+    android:id="@+id/layoutPassword"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:hint="@string/ui_twitter_password_hint"
-    android:inputType="textPassword"
-  />
+    android:orientation="horizontal">
+    <EditText
+      android:text=""
+      android:id="@+id/editTwitterPassword"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/ui_twitter_password_hint"
+      android:inputType="textPassword"
+    />
+    <TextView
+      android:text="@string/ui_twitter_authorized_text"
+      android:id="@+id/textAuthorized"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+    />
+  </LinearLayout>
   <TextView
-    android:text=""
+    android:text="@string/ui_twitter_description_text"
     android:id="@+id/textTwitterDescription"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip"
   />
+  <LinearLayout
+    android:id="@+id/layoutFotter"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <Button
+      android:text="@string/ui_twitter_auth_button_text"
+      android:id="@+id/btnAuth"
+      android:layout_weight="1"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"/>
+    <Button
+      android:text="@string/ui_twitter_unauth_button_text"
+      android:id="@+id/btnUnauth"
+      android:layout_weight="1"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+    />
+    <Button
+      android:text="@string/ui_twitter_cancel_button_text"
+      android:id="@+id/btnCancel"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+    />
+  </LinearLayout>
 </LinearLayout>
