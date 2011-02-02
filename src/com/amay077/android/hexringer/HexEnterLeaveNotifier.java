@@ -49,7 +49,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 					// Out to out. Do nothing.
 				} else {
 					// Out to in. Enter.
-					enterHex(hitHex);
+					enterHex(hitHex, location);
 				}
 			} else {
 				if (lastHex.equals(hitHex)) {
@@ -57,11 +57,11 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 					Log.d(this.getClass().getSimpleName(), "onLocationChanged still in hex:" + hitHex);
 				} else if (hitHex == null) {
 					// In to out. Leave.
-					leaveHex(lastHex);
+					leaveHex(lastHex, location);
 				} else {
 					// Hex内→Hex外→別Hex内
 					// In -> out -> in other hex. Leave and enter.
-					leaveAndEnterHex(lastHex, hitHex);
+					leaveAndEnterHex(lastHex, hitHex, location);
 				}
 			}
 		} catch (Exception e) {
@@ -70,23 +70,23 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 	}
 
 
-	private void enterHex(String hitHex) {
+	private void enterHex(String hitHex, Location location) {
 		lastHex = hitHex;
 		if (hexEnterLeaveListener != null) {
-			hexEnterLeaveListener.onEnter(hitHex);
+			hexEnterLeaveListener.onEnter(hitHex, location);
 		}
 	}
-	private void leaveHex(String lastHex) {
+	private void leaveHex(String lastHex, Location location) {
 		this.lastHex = lastHex;
 		if (hexEnterLeaveListener != null) {
-			hexEnterLeaveListener.onLeave(lastHex);
+			hexEnterLeaveListener.onLeave(lastHex, location);
 		}
 	}
-	private void leaveAndEnterHex(String lastHex, String hitHex) {
+	private void leaveAndEnterHex(String lastHex, String hitHex, Location location) {
 		this.lastHex = hitHex;
 		if (hexEnterLeaveListener != null) {
-			hexEnterLeaveListener.onLeave(lastHex);
-			hexEnterLeaveListener.onEnter(hitHex);
+			hexEnterLeaveListener.onLeave(lastHex, location);
+			hexEnterLeaveListener.onEnter(hitHex, location);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 	}
 
 	public interface HexEnterLeaveListender {
-		void onEnter(String enterHex);
-		void onLeave(String leaveHex);
+		void onEnter(String enterHex, Location location);
+		void onLeave(String leaveHex, Location location);
 	}
 }

@@ -1,33 +1,28 @@
 package com.amay077.android.preference;
 
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.http.AccessToken;
 
 import com.amay077.android.hexringer.Const;
 import com.amay077.android.hexringer.R;
+import com.amay077.android.logging.Log;
+import com.amay077.android.os.ZippyAsyncTask;
 import com.amay077.android.twitter.AuthInfo;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.DialogPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class TwitterConfigPreference extends DialogPreference {
     /**
@@ -40,14 +35,12 @@ public class TwitterConfigPreference extends DialogPreference {
     private Button buttonUnauth = null;
     private TextView textAnthorized = null;
 
-    private AuthInfo info = new AuthInfo("");
+    private AuthInfo info = AuthInfo.makeEmpty();
 
     public TwitterConfigPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
     	setDialogLayoutResource(R.layout.twitter_login);
-//    	setPositiveButtonText(android.R.string.ok);
-//        setNegativeButtonText(android.R.string.cancel);
     }
 
     public TwitterConfigPreference(Context context, AttributeSet attrs) {
@@ -63,7 +56,7 @@ public class TwitterConfigPreference extends DialogPreference {
      *
      * @param text The text to save
      */
-    public void setText(AuthInfo info) {
+    public void setAuthInfo(AuthInfo info) {
         final boolean wasBlocking = shouldDisableDependents();
 
         this.info = info;
@@ -81,7 +74,7 @@ public class TwitterConfigPreference extends DialogPreference {
      *
      * @return The current preference value.
      */
-    public AuthInfo getText() {
+    public AuthInfo getAuthInfo() {
         return this.info;
     }
 
@@ -97,7 +90,7 @@ public class TwitterConfigPreference extends DialogPreference {
         textAnthorized = (TextView)view.findViewById(R.id.textAuthorized);
 
 
-        AuthInfo info = getText();
+        AuthInfo info = getAuthInfo();
         boolean isAuthorized = !TextUtils.isEmpty(info.consumerToken);
         if (isAuthorized) {
         	editUserId.setEnabled(false);
@@ -119,32 +112,43 @@ public class TwitterConfigPreference extends DialogPreference {
 
 			@Override
 			public void onClick(View view) {
-				// TODO: Twitter xAuth
+				// Twitter xAuth
+				new ZippyAsyncTask<Void, Void, AccessToken>(TwitterConfigPreference.this.getContext()) {
 
-		        try {
-			        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
-			        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
-			        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
+					@Override
+					protected AccessToken doInBackground(Void... params) {
+				        try {
+					        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
+					        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
+					        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
 
-			        TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
-			        Twitter twitter = twitterfactory.getInstance(
-			        		editUserId.getText().toString(),
-			        		editPassword.getText().toString());
+					        TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
+					        Twitter twitter = twitterfactory.getInstance(
+					        		editUserId.getText().toString(),
+					        		editPassword.getText().toString());
 
-			        AccessToken token;
-		        	token = twitter.getOAuthAccessToken();
+				        	return twitter.getOAuthAccessToken();
+				        } catch (Exception e) {
+				        	Log.w("TwitterConfigPreference", "Twitter xAuth failed.", e);
+				        }
 
-		        	TwitterConfigPreference.this.info.consumerToken = token.getToken();
-		        	TwitterConfigPreference.this.info.consumerSecret = token.getTokenSecret();
-		        	TwitterConfigPreference.this.info.userId = editUserId.getText().toString();
+						return null;
+					}
 
-		        	TwitterConfigPreference.this.getDialog().dismiss();
-					onDialogClosed(true);
-		        } catch (Exception e) {
+					@Override
+					protected void onPostExecute(AccessToken result) {
+						super.onPostExecute(result);
 
-		        }
+						if (result != null) {
+				        	TwitterConfigPreference.this.info.consumerToken = result.getToken();
+				        	TwitterConfigPreference.this.info.consumerSecret = result.getTokenSecret();
+				        	TwitterConfigPreference.this.info.userId = editUserId.getText().toString();
 
-
+				        	TwitterConfigPreference.this.getDialog().dismiss();
+							onDialogClosed(true);
+						}
+					}
+				}.execute((Void)null);
 			}
 		});
 
@@ -152,9 +156,8 @@ public class TwitterConfigPreference extends DialogPreference {
 
 			@Override
 			public void onClick(View view) {
-				// TODO: clear xAuth token
-
-				TwitterConfigPreference.this.info = new AuthInfo("");
+				// clear xAuth token
+				TwitterConfigPreference.this.info = AuthInfo.makeEmpty();
 				TwitterConfigPreference.this.getDialog().dismiss();
 				onDialogClosed(true);
 			}
@@ -176,7 +179,7 @@ public class TwitterConfigPreference extends DialogPreference {
 
         if (positiveResult) {
             if (callChangeListener(info.toString())) {
-                setText(info);
+                setAuthInfo(info);
             }
         }
     }
@@ -188,7 +191,8 @@ public class TwitterConfigPreference extends DialogPreference {
 
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        setText(new AuthInfo(restoreValue ? getPersistedString(info.toString()) : (String) defaultValue));
+        setAuthInfo(AuthInfo.fromString(restoreValue ?
+        		getPersistedString(info.toString()) : (String) defaultValue));
     }
 
     @Override
@@ -221,7 +225,7 @@ public class TwitterConfigPreference extends DialogPreference {
         }
 
         final SavedState myState = new SavedState(superState);
-        myState.text = getText();
+        myState.text = getAuthInfo();
         return myState;
     }
 
@@ -235,7 +239,7 @@ public class TwitterConfigPreference extends DialogPreference {
 
         SavedState myState = (SavedState) state;
         super.onRestoreInstanceState(myState.getSuperState());
-        setText(myState.text);
+        setAuthInfo(myState.text);
     }
 
     private static class SavedState extends BaseSavedState {
@@ -243,7 +247,7 @@ public class TwitterConfigPreference extends DialogPreference {
 
         public SavedState(Parcel source) {
             super(source);
-            text = new AuthInfo(source.readString());
+            text = AuthInfo.fromString(source.readString());
         }
 
         @Override
@@ -255,17 +259,16 @@ public class TwitterConfigPreference extends DialogPreference {
         public SavedState(Parcelable superState) {
             super(superState);
         }
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
+
+	public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+		public SavedState createFromParcel(Parcel in) {
+			return new SavedState(in);
+		}
+
+		public SavedState[] newArray(int size) {
+			return new SavedState[size];
+		}
+	};
 
 }

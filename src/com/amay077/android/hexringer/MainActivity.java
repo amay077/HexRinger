@@ -1,6 +1,7 @@
 package com.amay077.android.hexringer;
 
 import java.util.Set;
+
 import com.amay077.android.hexringer.AlarmBroadcastReceiver.StringUtil;
 import com.amay077.android.hexringer.R;
 import com.amay077.android.logging.Log;
@@ -41,6 +42,23 @@ public class MainActivity extends MapActivity {
 
         public void onClick(View v) {
             Log.d(this.getClass().getSimpleName(), "buttonStartMonitoring_onClick called.");
+
+//	        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
+//	        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
+//	        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
+//			TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
+//			String text = pref.getString(R.string.pref_twitter_key, "");
+//			AuthInfo info = AuthInfo.fromString(text);
+//	        Twitter twitter = twitterfactory.getOAuthAuthorizedInstance(
+//	        		new AccessToken(info.consumerToken, info.consumerSecret));
+//
+//	        try {
+//				twitter.updateStatus("test");
+//			} catch (TwitterException e) {
+//				// TODO 自動生成された catch ブロック
+//				e.printStackTrace();
+//			}
+
 
             // TODO : Is selecting Hex?
         	Set<String> watchHexesSet = watchHexOverlay.getSelectedGeoHexCodes();
