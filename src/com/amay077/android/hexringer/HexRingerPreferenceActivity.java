@@ -1,6 +1,10 @@
 package com.amay077.android.hexringer;
 
 import java.util.Map;
+
+import com.amay077.android.preference.TwitterConfigPreference;
+import com.amay077.android.twitter.AuthInfo;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -57,6 +61,11 @@ public class HexRingerPreferenceActivity extends PreferenceActivity implements O
         	if (pref.getClass() == ListPreference.class) {
         		ListPreference listPref = (ListPreference)pref;
             	listPref.setSummary(addSummaryPrefix(listPref.getEntry().toString()));
+        	} else if (pref.getClass() == TwitterConfigPreference.class) {
+        		TwitterConfigPreference configPref = (TwitterConfigPreference)pref;
+        		AuthInfo info = configPref.getAuthInfo();
+
+        		configPref.setSummary(info.userId + "で接続済み");
         	} else {
             	pref.setSummary(addSummaryPrefix(prefs.getString(key, "")));
         	}

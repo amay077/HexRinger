@@ -1,5 +1,6 @@
 package com.amay077.android.hexringer;
 
+import twitter4j.GeoLocation;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
@@ -13,6 +14,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.widget.Toast;
@@ -92,7 +94,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 //		}
 	}
 
-	public void onEnter(String enterHex) {
+	public void onEnter(String enterHex, Location location) {
 		try {
 			Log.d(this.getClass().getSimpleName(), "onEnter() " + enterHex);
 	    	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
@@ -100,31 +102,39 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			writeLastHexToPreference(enterHex);
 			Log.d(this.getClass().getSimpleName(), "onEnter() set ringermode normal.");
 
-			tweet("enter hex:" + enterHex + ". set ringermode normal. #HexRinger");
+			tweet("enter hex:" + enterHex + ". set ringermode normal. accuracy:"
+					+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
 
 		} catch (Exception e) {
 			Log.e(this.getClass().getSimpleName(), "onEnter() failed.", e);
 		}
 	}
 
-	private void tweet(String message) {
+	private void tweet(String message, Location location) {
 
 		try	{
 	        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
 	        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
 	        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
 			TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
-			AuthInfo info = new AuthInfo(context.getString(R.string.pref_twitter_key));
+			AuthInfo info = AuthInfo.fromString(pref.getString(R.string.pref_twitter_key, ""));
+
+			if (info == null || info.isEmpty()) {
+				Log.d(this.getClass().getSimpleName(), "tweet() twitter not connected.");
+				return;
+			}
+
 	        Twitter twitter = twitterfactory.getOAuthAuthorizedInstance(
 	        		new AccessToken(info.consumerToken, info.consumerSecret));
 
-	        twitter.updateStatus(message);
+	        twitter.updateStatus(message, new GeoLocation(location.getLatitude(), location.getLongitude()));
+			Log.d(this.getClass().getSimpleName(), "tweet() succeeded.");
 		} catch (Exception e) {
 			Log.w(this.getClass().getSimpleName(), "tweet() failed.", e);
 		}
 	}
 
-	public void onLeave(String leaveHex) {
+	public void onLeave(String leaveHex, Location location) {
 		Log.d(this.getClass().getSimpleName(), "onLeave() " + leaveHex);
     	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(pref.getAsInt(R.string.pref_mannermode_type_key,
@@ -132,7 +142,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		writeLastHexToPreference(null);
 		Log.d(this.getClass().getSimpleName(), "onLeave() set ringermode manner.");
 
-		tweet("leave hex:" + leaveHex + ". set ringermode manner. #HexRinger");
+		tweet("leave hex:" + leaveHex + ". set ringermode manner. accuracy:"
+				+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
+
 	}
 
 	private void writeLastHexToPreference(String hitHex) {
