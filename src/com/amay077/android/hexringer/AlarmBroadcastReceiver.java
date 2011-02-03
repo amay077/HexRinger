@@ -102,7 +102,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			writeLastHexToPreference(enterHex);
 			Log.d(this.getClass().getSimpleName(), "onEnter() set ringermode normal.");
 
-			tweet("enter hex:" + enterHex + ". set ringermode normal. accuracy:"
+			tweet("マナーモードを OFF にしました。 hex:" + enterHex + ". accuracy:"
 					+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
 
 		} catch (Exception e) {
@@ -111,26 +111,33 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	}
 
 	private void tweet(String message, Location location) {
+		for (int i = 0; i < 3; i++) {
+			try	{
+		        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
+		        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
+		        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
+				TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
+				AuthInfo info = AuthInfo.fromString(pref.getString(R.string.pref_twitter_key, ""));
 
-		try	{
-	        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
-	        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
-	        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
-			TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
-			AuthInfo info = AuthInfo.fromString(pref.getString(R.string.pref_twitter_key, ""));
+				if (info == null || info.isEmpty()) {
+					Log.d(this.getClass().getSimpleName(), "tweet() twitter not connected.");
+					return;
+				}
 
-			if (info == null || info.isEmpty()) {
-				Log.d(this.getClass().getSimpleName(), "tweet() twitter not connected.");
+		        Twitter twitter = twitterfactory.getOAuthAuthorizedInstance(
+		        		new AccessToken(info.consumerToken, info.consumerSecret));
+
+		        twitter.updateStatus(message, new GeoLocation(location.getLatitude(), location.getLongitude()));
+				Log.d(this.getClass().getSimpleName(), "tweet() succeeded.");
 				return;
+			} catch (Exception e) {
+				Log.w(this.getClass().getSimpleName(), "tweet() failed.", e);
+				try {
+					Thread.sleep(10000); // 10秒待ってリトライ
+				} catch (InterruptedException e1) {
+					Log.w(this.getClass().getSimpleName(), "tweet() sleep failed.", e1);
+				}
 			}
-
-	        Twitter twitter = twitterfactory.getOAuthAuthorizedInstance(
-	        		new AccessToken(info.consumerToken, info.consumerSecret));
-
-	        twitter.updateStatus(message, new GeoLocation(location.getLatitude(), location.getLongitude()));
-			Log.d(this.getClass().getSimpleName(), "tweet() succeeded.");
-		} catch (Exception e) {
-			Log.w(this.getClass().getSimpleName(), "tweet() failed.", e);
 		}
 	}
 
@@ -142,7 +149,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		writeLastHexToPreference(null);
 		Log.d(this.getClass().getSimpleName(), "onLeave() set ringermode manner.");
 
-		tweet("leave hex:" + leaveHex + ". set ringermode manner. accuracy:"
+		tweet("マナーモードを ON にしました。 hex:" + leaveHex + ". accuracy:"
 				+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
 
 	}

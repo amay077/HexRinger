@@ -7,6 +7,7 @@ import net.geohex.GeoHex;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.amay077.android.hexringer.AlarmBroadcastReceiver.StringUtil;
 import com.amay077.android.location.TimeoutableLocationListener;
 import com.amay077.android.logging.Log;
 
@@ -44,8 +45,8 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(notifyHexes, location);
 			String hitHex = hitHexes.length > 0 ? hitHexes[0].code : null;
 
-			if (lastHex == null) {
-				if (hitHex == null) {
+			if (StringUtil.isNullOrEmpty(lastHex)) {
+				if (StringUtil.isNullOrEmpty(hitHex)) {
 					// Out to out. Do nothing.
 				} else {
 					// Out to in. Enter.
@@ -55,7 +56,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 				if (lastHex.equals(hitHex)) {
 					// In to in. Do nothing.
 					Log.d(this.getClass().getSimpleName(), "onLocationChanged still in hex:" + hitHex);
-				} else if (hitHex == null) {
+				} else if (StringUtil.isNullOrEmpty(hitHex)) {
 					// In to out. Leave.
 					leaveHex(lastHex, location);
 				} else {
