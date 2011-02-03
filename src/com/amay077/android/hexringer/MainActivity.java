@@ -43,31 +43,22 @@ public class MainActivity extends MapActivity {
         public void onClick(View v) {
             Log.d(this.getClass().getSimpleName(), "buttonStartMonitoring_onClick called.");
 
-//	        ConfigurationBuilder confbuilder = new ConfigurationBuilder();
-//	        confbuilder.setOAuthConsumerKey(Const.TWITTER_CONSUMER_TOKEN);
-//	        confbuilder.setOAuthConsumerSecret(Const.TWITTER_CONSUMER_SECRET);
-//			TwitterFactory twitterfactory = new TwitterFactory(confbuilder.build());
-//			String text = pref.getString(R.string.pref_twitter_key, "");
-//			AuthInfo info = AuthInfo.fromString(text);
-//	        Twitter twitter = twitterfactory.getOAuthAuthorizedInstance(
-//	        		new AccessToken(info.consumerToken, info.consumerSecret));
-//
-//	        try {
-//				twitter.updateStatus("test");
-//			} catch (TwitterException e) {
-//				// TODO 自動生成された catch ブロック
-//				e.printStackTrace();
-//			}
-
-
             // TODO : Is selecting Hex?
         	Set<String> watchHexesSet = watchHexOverlay.getSelectedGeoHexCodes();
         	String[] watchHexes = new String[watchHexesSet.size()];
         	watchHexesSet.toArray(watchHexes);
 
             pref.saveBoolean(R.string.pref_alarm_enabled_key, true);
-            pref.saveString(R.string.pref_watch_hexes_key,
-            		StringUtil.fromArray(watchHexes, Const.ARRAY_SPLITTER));
+
+            String prevWatchHexes = pref.getString(R.string.pref_watch_hexes_key, "");
+            String newWatchHexed = StringUtil.fromArray(watchHexes, Const.ARRAY_SPLITTER);
+
+            // 監視する Hex が変わったら、前回位置を破棄する
+            if (!prevWatchHexes.equals(newWatchHexed)) {
+                pref.saveString(R.string.pref_last_hex_key, "");
+            }
+
+            pref.saveString(R.string.pref_watch_hexes_key, newWatchHexed);
 
             Const.setNextAlarm(MainActivity.this,
             		pref.getAsInt(R.string.pref_watchinterval_key,

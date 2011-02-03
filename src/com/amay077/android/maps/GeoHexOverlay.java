@@ -13,6 +13,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Paint.Style;
+import android.view.MotionEvent;
+
+import com.amay077.android.logging.Log;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -107,9 +110,19 @@ public class GeoHexOverlay extends Overlay {
 		}
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent e, MapView mapView) {
+		Log.d(this.getClass().getSimpleName(), "onTouchEvent() Action:" + String.valueOf(e.getAction()));
+		Log.d(this.getClass().getSimpleName(), "onTouchEvent() DownTime:" + String.valueOf(e.getDownTime()));
+		Log.d(this.getClass().getSimpleName(), "onTouchEvent() EventTime:" + String.valueOf(e.getEventTime()));
+
+		return super.onTouchEvent(e, mapView);
+	}
+
 	/** GeoHex の選択 or 選択解除 */
 	@Override
 	public boolean onTap(GeoPoint p, MapView mapView) {
+		Log.d(this.getClass().getSimpleName(), "onTap() called.");
 
 		// 世界地図だと 0 度またぎの対応が面倒なので、Level3 くらいまでの対応にする
 		if (mapView.getZoomLevel() <= MIN_ZOOMLEVEL) { return false; }
@@ -119,7 +132,7 @@ public class GeoHexOverlay extends Overlay {
 		if (zone == null) { return false; }
 
 		// 選択 or 選択解除
-		// TODO: レベル上位&下位の選択済み GeoHex の対応
+		getSelectedGeoHexCodes().clear();
 		if (getSelectedGeoHexCodes().contains(zone.code)) {
 			getSelectedGeoHexCodes().remove(zone.code);
 		} else {
@@ -129,7 +142,7 @@ public class GeoHexOverlay extends Overlay {
 		// 再描画
 		mapView.invalidate();
 
-		return true;
+		return super.onTap(p, mapView);
 	}
 
 	// public methods ---------------------------------------------------------
