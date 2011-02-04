@@ -1,6 +1,10 @@
-# Special Thanks
+# SPECIAL THANKS
+
+ * [ハマッカソン公開Wiki](https://github.com/mackato/hamackathon/wiki)
  * [Android で MapView へ現在地に青い円を描画する](http://d.hatena.ne.jp/orangesignal/20101228/1293513030) - OrangeSignal ブログ
  * [Android　Zippy apps tips](http://y-anz-m.blogspot.com/2010/10/androidzippy-apps-tips.html) - Y.A.M の 雑記帳
+
+
 # LICENSE
 
 ## GeoHex
@@ -21,13 +25,13 @@ by Vivid Solutions, Inc. http://www.vividsolutions.com/jts/JTSHome.htm
 ## microlog4android
 microlog4android specification is licensed under Apache License 2.0
 by johan.karlsson.malmo Inc. http://code.google.com/p/microlog4android/
-”Default-Locale” Version implemented by @amay077.
-https://github.com/amay077/microlog4android
+”Default-Locale” Version implemented by @amay077 https://github.com/amay077/microlog4android
 
 ## Twitter4J
 Twitter4J specification is licensed under BSD License
-Copyright (c) 2007-2011, Yusuke Yamamoto
+Copyright (c) 2007-2011, Yusuke Yamamoto 
 All rights reserved.
+http://twitter4j.org/
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -45,8 +49,7 @@ http://twitter.com/amay077
 http://amay077.posterous.com/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
