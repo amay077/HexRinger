@@ -27,8 +27,9 @@ by johan.karlsson.malmo Inc. http://code.google.com/p/microlog4android/
 
 ## Twitter4J
 Twitter4J specification is licensed under BSD License
-Copyright (c) 2007-2011, Yusuke Yamamoto
+Copyright (c) 2007-2011, Yusuke Yamamoto 
 All rights reserved.
+http://twitter4j.org/
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
