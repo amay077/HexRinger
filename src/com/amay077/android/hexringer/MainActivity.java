@@ -12,7 +12,10 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +31,17 @@ public class MainActivity extends MapActivity {
 
     // Fields
     private PreferenceWrapper pref = null;
+    private BroadcastReceiver locationChangedReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d("locationChangedReceiver", "onReceive() called.");
+
+			if (intent.getAction().equals(Const.ACTION_HEXRINGAR_LOCATION_CHANGED)) {
+				// TODO: Change MapView current position.
+			}
+		}
+	};
 
     // UI components
     private MapView mapview = null;
@@ -165,14 +179,21 @@ public class MainActivity extends MapActivity {
 
     @Override
     protected void onPause() {
-        Log.d(this.getClass().getSimpleName(), "onPause called.");
     	super.onPause();
+        Log.d(this.getClass().getSimpleName(), "onPause called.");
+
+    	// register Receiver
+        unregisterReceiver(locationChangedReceiver);
     }
 
     @Override
     protected void onResume() {
-        Log.d(this.getClass().getSimpleName(), "onResume called.");
     	super.onResume();
+        Log.d(this.getClass().getSimpleName(), "onResume called.");
+
+    	// register Receiver
+        registerReceiver(locationChangedReceiver,
+        		new IntentFilter(Const.ACTION_HEXRINGAR_LOCATION_CHANGED));
     }
 
     @Override
