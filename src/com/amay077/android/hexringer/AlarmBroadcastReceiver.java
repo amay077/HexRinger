@@ -84,7 +84,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 		locaMan.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_MS, 0,
 				new HexEnterLeaveNotifier(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, null,
-						watchHexes, lastHex, pref, this));
+						watchHexes, lastHex, context, this));
 	}
 
 	public void onEnter(String enterHex, Location location) {

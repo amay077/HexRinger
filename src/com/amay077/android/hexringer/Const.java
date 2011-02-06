@@ -13,19 +13,17 @@ import android.content.Intent;
 public class Const {
 	// Intent Action
 	static public final String ACTION_HEXRINGAR_ALARM = "com.amay077.android.hexringer.ALARM";
+	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED = "com.amay077.android.hexringer.LOCATION_CHANGED";
+
+	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LAT = "latitude";
+	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LONG = "longitude";
+	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ALT = "altitude";
+	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_TIME = "time";
 
 	static public final String TWITTER_CONSUMER_TOKEN = "eIyOFT2k0p7YVGWhDFJJA";
     static public final String TWITTER_CONSUMER_SECRET = "8G3i98Q3f76SZ1SlkfN8ch8SX4QKWEIuNge6tQdHs";
 
 
-	// Preference
-//	static public final String PREF_KEY_ALARM_ENABLED = "ALARM_ENABLED";
-//	static public final String PREF_KEY_WATCH_HEXES = "WATCH_HEXES";
-//	static public final String PREF_KEY_LAST_HEX = "LAST_HEX";
-
-	/** アラームの実行間隔（分） */
-//	static public final int DEFAULT_ALARM_INTERVAL_MINUTES = 10;
-//	static public final int DEFAULT_MANNERMODE_TYPE = AudioManager.RINGER_MODE_SILENT;
 
 	/** 初回測位までのタイムアウト時間（ミリ秒） */
 	static public final short LOCATION_REQUEST_TIMEOUT_MS = 30000;

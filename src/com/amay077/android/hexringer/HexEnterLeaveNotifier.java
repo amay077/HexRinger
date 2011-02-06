@@ -4,6 +4,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.geohex.GeoHex;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -18,11 +21,12 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 	private String[] notifyHexes;
 	private String lastHex;
 	private HexEnterLeaveListender hexEnterLeaveListener = null;
+	private Context context = null;
 	private PreferenceWrapper pref = null;
 
 	public HexEnterLeaveNotifier(LocationManager locaMan, long timeOutMS,
 			TimeoutLisener timeoutListener, String[] notifyHexes, String lastHex,
-			PreferenceWrapper pref,
+			Context context,
 			HexEnterLeaveListender enterLeaveListener) {
 		super(locaMan, timeOutMS, timeoutListener);
 		Log.d(this.getClass().getSimpleName(), "ctor called.");
@@ -30,7 +34,8 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 		this.notifyHexes = notifyHexes;
 		this.lastHex = lastHex;
 		this.hexEnterLeaveListener = enterLeaveListener;
-		this.pref = pref;
+		this.context = context;
+		this.pref = new PreferenceWrapper(context);
 	}
 
 	public void onLocationChanged(Location location) {
@@ -48,6 +53,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 					+ String.valueOf(location.getAccuracy()));
 
 			writeLastLocationToPreference(location);
+			sendLocationChangedBroadcastIntent(location);
 
 			// Get hit hexes in current location and accuracy, order by nearby
 			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(notifyHexes, location);
@@ -75,6 +81,23 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			}
 		} catch (Exception e) {
 			Log.e(this.getClass().getSimpleName(), "onLocationChanged failed.");
+		}
+	}
+
+	private void sendLocationChangedBroadcastIntent(Location location) {
+		try {
+			Log.d(this.getClass().getSimpleName(), "sendLocationChangedBroadcastIntent() called.");
+
+			Intent intent = new Intent(Const.ACTION_HEXRINGAR_LOCATION_CHANGED);
+			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LAT, location.getLatitude());
+			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LONG, location.getLongitude());
+			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ALT, location.getAltitude());
+			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_TIME, location.getTime());
+			context.sendBroadcast(intent);
+
+			Log.d(this.getClass().getSimpleName(), "sendLocationChangedBroadcastIntent() succeeded.");
+		} catch (Exception e) {
+			Log.d(this.getClass().getSimpleName(), "sendLocationChangedBroadcastIntent() failed.", e);
 		}
 	}
 
