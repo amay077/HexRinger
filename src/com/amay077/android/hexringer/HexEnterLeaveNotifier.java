@@ -6,7 +6,6 @@ import java.util.TreeSet;
 import net.geohex.GeoHex;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -91,7 +90,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			Intent intent = new Intent(Const.ACTION_HEXRINGAR_LOCATION_CHANGED);
 			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LAT, location.getLatitude());
 			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LONG, location.getLongitude());
-			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ALT, location.getAltitude());
+			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ACCURACY, location.getAccuracy());
 			intent.putExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_TIME, location.getTime());
 			context.sendBroadcast(intent);
 
