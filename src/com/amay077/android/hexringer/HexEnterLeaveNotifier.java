@@ -7,24 +7,30 @@ import net.geohex.GeoHex;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.amay077.android.hexringer.AlarmBroadcastReceiver.LocationUtil;
 import com.amay077.android.hexringer.AlarmBroadcastReceiver.StringUtil;
 import com.amay077.android.location.TimeoutableLocationListener;
 import com.amay077.android.logging.Log;
+import com.amay077.android.preference.PreferenceWrapper;
 
 public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 
 	private String[] notifyHexes;
 	private String lastHex;
 	private HexEnterLeaveListender hexEnterLeaveListener = null;
+	private PreferenceWrapper pref = null;
 
 	public HexEnterLeaveNotifier(LocationManager locaMan, long timeOutMS,
-			TimeoutLisener timeoutListener, String[] notifyHexes, String lastHex, HexEnterLeaveListender enterLeaveListener) {
+			TimeoutLisener timeoutListener, String[] notifyHexes, String lastHex,
+			PreferenceWrapper pref,
+			HexEnterLeaveListender enterLeaveListener) {
 		super(locaMan, timeOutMS, timeoutListener);
 		Log.d(this.getClass().getSimpleName(), "ctor called.");
 
 		this.notifyHexes = notifyHexes;
 		this.lastHex = lastHex;
 		this.hexEnterLeaveListener = enterLeaveListener;
+		this.pref = pref;
 	}
 
 	public void onLocationChanged(Location location) {
@@ -32,7 +38,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			super.onLocationChanged(location);
 			Log.d(this.getClass().getSimpleName(), "onLocationChanged called.");
 
-			// Valid location (WiFi location big changes, Hardware bug, etc...)
+			// TODO  Valid location (WiFi location big changes, Hardware bug, etc...)
 			// if (!vaildLocation()) return;
 
 			Log.d(this.getClass().getSimpleName(), "onLocationChanged " +
@@ -40,6 +46,8 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 					+ String.valueOf(location.getLatitude()) + "/"
 					+ String.valueOf(location.getLongitude()) + "/"
 					+ String.valueOf(location.getAccuracy()));
+
+			writeLastLocationToPreference(location);
 
 			// Get hit hexes in current location and accuracy, order by nearby
 			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(notifyHexes, location);
@@ -70,6 +78,14 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 		}
 	}
 
+	private void writeLastLocationToPreference(Location loc) {
+		if (loc == null) {
+			pref.remove(R.string.pref_last_location_key);
+		} else {
+
+			pref.saveString(R.string.pref_last_location_key, LocationUtil.toString(loc));
+		}
+	}
 
 	private void enterHex(String hitHex, Location location) {
 		lastHex = hitHex;

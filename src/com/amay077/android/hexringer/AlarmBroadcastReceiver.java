@@ -84,14 +84,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 		locaMan.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_MS, 0,
 				new HexEnterLeaveNotifier(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, null,
-						watchHexes, lastHex, this));
-
-//		// FIXME : Debug only.
-//		for (String provider : locaMan.getProviders(true)) {
-//			Log.d("AlarmBroadcastReceiver.startHexEnterLeaveNotify", provider + " provider found.");
-//			locaMan.requestLocationUpdates(provider, MIN_TIME_MS, 0,
-//					new LoggingLocationListener(locaMan, Const.LOCATION_REQUEST_TIMEOUT_MS, "/HexRinger/" + provider + ".txt"));
-//		}
+						watchHexes, lastHex, pref, this));
 	}
 
 	public void onEnter(String enterHex, Location location) {
@@ -151,7 +144,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 		tweet("マナーモードを ON にしました。 hex:" + leaveHex + ". accuracy:"
 				+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
-
 	}
 
 	private void writeLastHexToPreference(String hitHex) {
@@ -160,6 +152,12 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		} else {
 			pref.saveString(R.string.pref_last_hex_key, hitHex);
 		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		Log.d(this.getClass().getSimpleName(), "finalize() called.");
+		super.finalize();
 	}
 
 	public static class StringUtil {
@@ -195,9 +193,39 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		}
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		Log.d(this.getClass().getSimpleName(), "finalize() called.");
-		super.finalize();
+	public static class LocationUtil {
+		static public String toString(Location loc) {
+			if (loc == null) {
+				return "";
+			}
+
+			StringBuilder builder = new StringBuilder();
+
+			builder.append(loc.getLatitude());
+			builder.append(",");
+			builder.append(loc.getLongitude());
+			builder.append(",");
+			builder.append(loc.getAccuracy());
+			builder.append(",");
+			builder.append(loc.getTime());
+
+			return builder.toString();
+		}
+
+		static Location fromString(String text) {
+			if (text == null || text.equals("")) {
+				return null;
+			}
+
+			String[] buf = text.split(",");
+
+			Location loc = new Location("");
+			loc.setLatitude(Double.valueOf(buf[0]));
+			loc.setLongitude(Double.valueOf(buf[1]));
+			loc.setAltitude(Double.valueOf(buf[1]));
+
+
+			return loc;
+		}
 	}
 }
