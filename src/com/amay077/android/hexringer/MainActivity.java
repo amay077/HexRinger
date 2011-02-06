@@ -139,15 +139,8 @@ public class MainActivity extends MapActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-//    // オプションメニューが表示される度に呼び出されます
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        menu.findItem(MENU_ID_CONFIG).setVisible(visible);
-//        visible = !visible;
-//        return super.onPrepareOptionsMenu(menu);
-//    }
 
-    // オプションメニューアイテムが選択された時に呼び出されます
+    /** オプションメニューアイテムが選択された時に呼び出されます */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(this.getClass().getSimpleName(), "onOptionsItemSelected called.");
@@ -162,10 +155,6 @@ public class MainActivity extends MapActivity {
             ret = true;
             break;
         case MENU_ID_CONFIG:
-
-        	String test = pref.getString(R.string.pref_watchinterval_key, "def");
-
-            Toast.makeText(this, test, Toast.LENGTH_SHORT).show();
         	Intent intent = new Intent(this, HexRingerPreferenceActivity.class);
         	startActivity(intent);
             ret = true;
