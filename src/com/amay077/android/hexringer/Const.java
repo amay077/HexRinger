@@ -17,7 +17,7 @@ public class Const {
 
 	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LAT = "latitude";
 	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LONG = "longitude";
-	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ALT = "altitude";
+	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ACCURACY = "accuracy";
 	static public final String ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_TIME = "time";
 
 	static public final String TWITTER_CONSUMER_TOKEN = "eIyOFT2k0p7YVGWhDFJJA";

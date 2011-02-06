@@ -213,7 +213,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		}
 
 		static Location fromString(String text) {
-			if (text == null || text.equals("")) {
+			if (StringUtil.isNullOrEmpty(text)) {
 				return null;
 			}
 
@@ -222,7 +222,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			Location loc = new Location("");
 			loc.setLatitude(Double.valueOf(buf[0]));
 			loc.setLongitude(Double.valueOf(buf[1]));
-			loc.setAltitude(Double.valueOf(buf[1]));
+			loc.setAccuracy(Float.valueOf(buf[1]));
 
 
 			return loc;
