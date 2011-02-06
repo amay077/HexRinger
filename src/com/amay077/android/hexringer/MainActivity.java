@@ -2,20 +2,22 @@ package com.amay077.android.hexringer;
 
 import java.util.Set;
 
+import com.amay077.android.hexringer.AlarmBroadcastReceiver.LocationUtil;
 import com.amay077.android.hexringer.AlarmBroadcastReceiver.StringUtil;
 import com.amay077.android.hexringer.R;
 import com.amay077.android.logging.Log;
+import com.amay077.android.maps.CurrentLocationOverlay;
 import com.amay077.android.maps.GeoHexOverlay;
-import com.amay077.android.maps.MyLocationOverlayEx;
 import com.amay077.android.preference.PreferenceWrapper;
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,16 +39,25 @@ public class MainActivity extends MapActivity {
 		public void onReceive(Context context, Intent intent) {
 			Log.d("locationChangedReceiver", "onReceive() called.");
 
-			if (intent.getAction().equals(Const.ACTION_HEXRINGAR_LOCATION_CHANGED)) {
+			if (intent.getAction().equals(Const.ACTION_HEXRINGAR_LOCATION_CHANGED) &&
+				currentLocOverlay != null) {
 				// TODO: Change MapView current position.
+
+				Location loc = new Location("");
+				loc.setLatitude(intent.getDoubleExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LAT, 0d));
+				loc.setLongitude(intent.getDoubleExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LONG, 0d));
+				loc.setAccuracy(intent.getFloatExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ACCURACY, 0f));
+
+				updateCurrentLocation(loc);
 			}
 		}
 	};
 
     // UI components
     private MapView mapview = null;
-    private MyLocationOverlay myLocOverlay = null;
+//    private MyLocationOverlay myLocOverlay = null;
     private GeoHexOverlay watchHexOverlay = new GeoHexOverlay();
+    private CurrentLocationOverlay currentLocOverlay = null;
     private Button buttonStartMonitoring = null;
     private Button buttonStopMonitoring = null;
 
@@ -104,9 +115,13 @@ public class MainActivity extends MapActivity {
 
         initializeUI();
 
+        currentLocOverlay = new CurrentLocationOverlay(
+        		getResources().getDrawable(R.drawable.currentlocation));
+
         mapview.getOverlays().add(watchHexOverlay);
-        myLocOverlay = new MyLocationOverlayEx(this, mapview);
-        mapview.getOverlays().add(myLocOverlay);
+//        myLocOverlay = new MyLocationOverlayEx(this, mapview);
+//        mapview.getOverlays().add(myLocOverlay);
+        mapview.getOverlays().add(currentLocOverlay);
         pref = new PreferenceWrapper(this.getApplicationContext());
 
         toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
@@ -119,6 +134,10 @@ public class MainActivity extends MapActivity {
 	        	watchHexes.add(string);
 			}
         }
+
+        Location lastLocation = LocationUtil.fromString(
+        		pref.getString(R.string.pref_last_location_key, ""));
+        updateCurrentLocation(lastLocation);
     }
 
     private void initializeUI() {
@@ -132,6 +151,17 @@ public class MainActivity extends MapActivity {
         buttonStopMonitoring.setOnClickListener(buttonStopMonitoring_onClick);
 
     }
+
+	private void updateCurrentLocation(Location loc) {
+		if (loc == null || loc.getLatitude() == 0
+				|| loc.getLongitude() == 0 || loc.getAccuracy() == 0) {
+			return;
+		}
+
+		currentLocOverlay.setCurrentLocation(loc);
+		MapController controller = mapview.getController();
+		controller.animateTo(new GeoPoint((int)(loc.getLatitude() * 1E6), (int)(loc.getLongitude() * 1E6)));
+	}
 
     private void toggleMonitoringButton(boolean enabledAlarm) {
         buttonStartMonitoring.setVisibility(enabledAlarm ? View.GONE : View.VISIBLE);
