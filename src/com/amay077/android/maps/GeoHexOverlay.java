@@ -33,6 +33,10 @@ import com.google.android.maps.Projection;
  */
 public class GeoHexOverlay extends Overlay {
 
+	public interface OnTapHexListener {
+		void onTap(GeoHexOverlay sender, String hexCode);
+	}
+
 	// fields -----------------------------------------------------------------
 	final private int MIN_ZOOMLEVEL = 2;
 
@@ -47,6 +51,16 @@ public class GeoHexOverlay extends Overlay {
 
 	/** 選択時の GeoHex のレベル(今は GoogleMap の ZoomLV と連動) */
 	private int geoHexLevel;
+
+	private OnTapHexListener onTapHexListener = null;
+
+	public OnTapHexListener getOnTapHexListener() {
+		return onTapHexListener;
+	}
+
+	public void setOnTapHexListener(OnTapHexListener onTapHexListener) {
+		this.onTapHexListener = onTapHexListener;
+	}
 
 	// ctor -------------------------------------------------------------------
 	public GeoHexOverlay() {
@@ -131,16 +145,20 @@ public class GeoHexOverlay extends Overlay {
 		Zone zone = GeoHex.getZoneByLocation(p.getLatitudeE6() / 1E6, p.getLongitudeE6() / 1E6, geoHexLevel);
 		if (zone == null) { return false; }
 
-		// 選択 or 選択解除
-		getSelectedGeoHexCodes().clear();
-		if (getSelectedGeoHexCodes().contains(zone.code)) {
-			getSelectedGeoHexCodes().remove(zone.code);
-		} else {
-			getSelectedGeoHexCodes().add(zone.code);
+		if (onTapHexListener != null) {
+			onTapHexListener.onTap(this, zone.code);
 		}
 
-		// 再描画
-		mapView.invalidate();
+//		// 選択 or 選択解除
+//		getSelectedGeoHexCodes().clear();
+//		if (getSelectedGeoHexCodes().contains(zone.code)) {
+//			getSelectedGeoHexCodes().remove(zone.code);
+//		} else {
+//			getSelectedGeoHexCodes().add(zone.code);
+//		}
+//
+//		// 再描画
+//		mapView.invalidate();
 
 		return super.onTap(p, mapView);
 	}
