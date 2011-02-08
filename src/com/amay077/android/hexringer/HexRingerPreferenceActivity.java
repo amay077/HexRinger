@@ -64,8 +64,11 @@ public class HexRingerPreferenceActivity extends PreferenceActivity implements O
         	} else if (pref.getClass() == TwitterConfigPreference.class) {
         		TwitterConfigPreference configPref = (TwitterConfigPreference)pref;
         		AuthInfo info = configPref.getAuthInfo();
-
-        		configPref.setSummary(info.userId + "で接続済み");
+        		if (info.isEmpty()) {
+            		configPref.setSummary(info.userId + "で接続済み");
+        		} else {
+            		configPref.setSummary("接続していません");
+        		}
         	} else {
             	pref.setSummary(addSummaryPrefix(prefs.getString(key, "")));
         	}
