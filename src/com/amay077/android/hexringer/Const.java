@@ -6,6 +6,8 @@ import java.util.Calendar;
 import com.amay077.android.logging.Log;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +31,8 @@ public class Const {
 	static public final short LOCATION_REQUEST_TIMEOUT_MS = 30000;
 	/** 配列を文字列化する時の区切り文字 */
 	public static final String ARRAY_SPLITTER = ",";
+	/** WiFi 測位かどうかの精度の閾値（ｍ） */
+	public static final float LOCATION_MAX_ACCURACY = 1000;
 
 	/** AlarmManager にインテント発行を設定する（今からｎ分後） */
 	static public void setNextAlarm(Context context, int delay) {
@@ -49,6 +53,21 @@ public class Const {
 			cal.setTimeInMillis(System.currentTimeMillis());
 			cal.add(Calendar.MINUTE, delay);
 			alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+
+			NotificationManager notificationManager =
+				(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+			Notification notification = new Notification(
+					R.drawable.hex_status,
+					"位置を確認します",
+					System.currentTimeMillis());
+			Intent notifyIntent = new Intent(context, MainActivity.class);
+			//intentの設定
+			PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notifyIntent, 0);
+			notification.setLatestEventInfo(context.getApplicationContext(),
+					"HexRinger", "次回は " + new SimpleDateFormat("HH:mm:ss").format(cal.getTime()) + " に確認します", contentIntent);
+			notification.flags = Notification.FLAG_AUTO_CANCEL;
+			notificationManager.notify(R.string.app_name, notification);
 
 			Log.d("Const", "setNextAlarm Alarm set at " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime()));
 		} catch (Exception e) {
@@ -71,6 +90,10 @@ public class Const {
 					.getSystemService(Context.ALARM_SERVICE));
 
 			alarmManager.cancel(sender);
+
+			NotificationManager notificationManager =
+				(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancelAll();
 
 			Log.d("Const", "cancelAlarmManager Alarm canceled.");
 		} catch (Exception e) {
