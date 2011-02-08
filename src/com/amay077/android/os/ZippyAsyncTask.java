@@ -16,7 +16,7 @@ public abstract class ZippyAsyncTask<Params, Progress, Result>
 	private ProgressDialog dlg = null;
 	private Timer startTimer = new Timer();
 	private Context context = null;
-	private String progressMessage = "Now progress...";
+	private String progressMessage = "認証中...";
 	private int    progressDelay = 200;
 
 	public int getProgressDelay() {
