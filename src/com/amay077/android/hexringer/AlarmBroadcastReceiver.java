@@ -37,7 +37,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	public void onReceive(Context context, Intent intent) {
 		try {
 			Log.d(this.getClass().getSimpleName(), "onReceive() called.");
-	    	Toast.makeText(context, "AlarmBroadcastReceiver.onReceive", Toast.LENGTH_SHORT).show();
 
 	    	this.context = context;
 
@@ -222,7 +221,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			Location loc = new Location("");
 			loc.setLatitude(Double.valueOf(buf[0]));
 			loc.setLongitude(Double.valueOf(buf[1]));
-			loc.setAccuracy(Float.valueOf(buf[1]));
+			loc.setAccuracy(Float.valueOf(buf[2]));
+			loc.setTime(Long.valueOf(buf[3]));
 
 
 			return loc;
