@@ -94,7 +94,11 @@ public class MainActivity extends MapActivity {
 						pref.getAsInt(R.string.pref_watchinterval_key,
 								getString(R.string.pref_watchinterval_default)));
 				toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
-			} catch (Exception e) {
+
+				Toast.makeText(MainActivity.this,
+						"マナーモードの自動設定を開始しました",
+						Toast.LENGTH_SHORT).show();
+        	} catch (Exception e) {
 				Log.w("MainActivity.OnClickListener", "buttonStartMonitoring_onClick() failed.", e);
 			}
         }
@@ -109,6 +113,10 @@ public class MainActivity extends MapActivity {
 
 				pref.saveBoolean(R.string.pref_alarm_enabled_key, false);
 				toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
+
+				Toast.makeText(MainActivity.this,
+						"マナーモードの自動設定を停止しました",
+						Toast.LENGTH_SHORT).show();
 			} catch (Exception e) {
 				Log.w("MainActivity.OnClickListener", "buttonStopMonitoring_onClick() failed.", e);
 			}
@@ -125,7 +133,7 @@ public class MainActivity extends MapActivity {
 				Log.d("MainActivity.OnTapHexListener", "watchHexOverlay_onTap() hex:" + hexCode);
 				if (pref.getBoolean(R.string.pref_alarm_enabled_key, false)) {
 					Toast.makeText(MainActivity.this,
-							"エリアを選択するには、[停止] をして下さい",
+							"エリアを選択するには、[STOP] をして下さい",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -176,8 +184,8 @@ public class MainActivity extends MapActivity {
         		getResources().getDrawable(R.drawable.currentlocation));
         watchHexOverlay.setOnTapHexListener(onTapHexListener);
 
-        mapview.getOverlays().add(currentLocOverlay);
         mapview.getOverlays().add(watchHexOverlay);
+        mapview.getOverlays().add(currentLocOverlay);
         pref = new PreferenceWrapper(this.getApplicationContext());
 
         toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
@@ -262,9 +270,9 @@ public class MainActivity extends MapActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(this.getClass().getSimpleName(), "onCreateOptionsMenu called.");
         // メニューアイテムを追加します
-        menu.add(Menu.NONE, MENU_ID_RECENT_LOCATION, Menu.NONE, "最新の位置");
-        menu.add(Menu.NONE, MENU_ID_WATCH_HEXES, Menu.NONE, "監視エリア");
-        menu.add(Menu.NONE, MENU_ID_CONFIG, Menu.NONE, "設定");
+        menu.add(Menu.NONE, MENU_ID_RECENT_LOCATION, Menu.NONE, "最新の位置").setIcon(R.drawable.earth);
+        menu.add(Menu.NONE, MENU_ID_WATCH_HEXES, Menu.NONE, "監視エリア").setIcon(R.drawable.hex);
+        menu.add(Menu.NONE, MENU_ID_CONFIG, Menu.NONE, "設定").setIcon(R.drawable.gears);
         return super.onCreateOptionsMenu(menu);
     }
 
