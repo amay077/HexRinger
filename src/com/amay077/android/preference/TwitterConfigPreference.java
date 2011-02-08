@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TwitterConfigPreference extends DialogPreference {
     /**
@@ -41,6 +42,7 @@ public class TwitterConfigPreference extends DialogPreference {
         super(context, attrs, defStyle);
 
     	setDialogLayoutResource(R.layout.twitter_login);
+    	setDialogIcon(R.drawable.twitter);
     }
 
     public TwitterConfigPreference(Context context, AttributeSet attrs) {
@@ -129,6 +131,9 @@ public class TwitterConfigPreference extends DialogPreference {
 
 				        	return twitter.getOAuthAccessToken();
 				        } catch (Exception e) {
+							Toast.makeText(TwitterConfigPreference.this.getContext(),
+									"Twitter の認証に失敗しました。\nユーザー名とパスワードを確認してください",
+									Toast.LENGTH_SHORT).show();
 				        	Log.w("TwitterConfigPreference", "Twitter xAuth failed.", e);
 				        }
 
@@ -146,6 +151,10 @@ public class TwitterConfigPreference extends DialogPreference {
 
 				        	TwitterConfigPreference.this.getDialog().dismiss();
 							onDialogClosed(true);
+
+							Toast.makeText(TwitterConfigPreference.this.getContext(),
+									"Twitter に接続しました！",
+									Toast.LENGTH_SHORT).show();
 						}
 					}
 				}.execute((Void)null);
@@ -160,6 +169,9 @@ public class TwitterConfigPreference extends DialogPreference {
 				TwitterConfigPreference.this.info = AuthInfo.makeEmpty();
 				TwitterConfigPreference.this.getDialog().dismiss();
 				onDialogClosed(true);
+				Toast.makeText(TwitterConfigPreference.this.getContext(),
+						"Twitter から切断しました",
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 
