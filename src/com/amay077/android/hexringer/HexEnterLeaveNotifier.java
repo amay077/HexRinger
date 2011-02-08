@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 
 import com.amay077.android.hexringer.AlarmBroadcastReceiver.LocationUtil;
 import com.amay077.android.hexringer.AlarmBroadcastReceiver.StringUtil;
@@ -40,16 +41,30 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 	public void onLocationChanged(Location location) {
 		try {
 			super.onLocationChanged(location);
-			Log.d(this.getClass().getSimpleName(), "onLocationChanged called.");
+			Log.d(this.getClass().getSimpleName(), "onLocationChanged() called.");
 
 			// TODO  Valid location (WiFi location big changes, Hardware bug, etc...)
 			// if (!vaildLocation()) return;
 
-			Log.d(this.getClass().getSimpleName(), "onLocationChanged " +
+			Log.d(this.getClass().getSimpleName(), "onLocationChanged() " +
 					"lat/long/accuracy:"
 					+ String.valueOf(location.getLatitude()) + "/"
 					+ String.valueOf(location.getLongitude()) + "/"
 					+ String.valueOf(location.getAccuracy()));
+
+			// 閾値以上の誤差で、WiFi が有効なら無視する
+			if (location.getAccuracy() >= Const.LOCATION_MAX_ACCURACY) {
+				try {
+					WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+					if (wifiManager.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
+						Log.d(this.getClass().getSimpleName(), "onLocationChanged() accracy insufficiency.");
+						return;
+					}
+				} catch (Exception e) {
+					Log.w(this.getClass().getSimpleName(),
+							"onLocationChanged() get WiFi State failed, but continued.", e);
+				}
+			}
 
 			writeLastLocationToPreference(location);
 			sendLocationChangedBroadcastIntent(location);
@@ -68,7 +83,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			} else {
 				if (lastHex.equals(hitHex)) {
 					// In to in. Do nothing.
-					Log.d(this.getClass().getSimpleName(), "onLocationChanged still in hex:" + hitHex);
+					Log.d(this.getClass().getSimpleName(), "onLocationChanged() still in hex:" + hitHex);
 				} else if (StringUtil.isNullOrEmpty(hitHex)) {
 					// In to out. Leave.
 					leaveHex(lastHex, location);
@@ -79,7 +94,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 				}
 			}
 		} catch (Exception e) {
-			Log.e(this.getClass().getSimpleName(), "onLocationChanged failed.");
+			Log.e(this.getClass().getSimpleName(), "onLocationChanged() failed.");
 		}
 	}
 
