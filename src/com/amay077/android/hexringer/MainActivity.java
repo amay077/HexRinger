@@ -199,13 +199,7 @@ public class MainActivity extends MapActivity {
 			}
         }
 
-        Location lastLocation = LocationUtil.fromString(
-        		pref.getString(R.string.pref_last_location_key, ""));
-        if (lastLocation != null) {
-        	updateCurrentLocation(lastLocation);
-        } else {
-        	beginPanningToCurrentLocation();
-        }
+        moveToRecentLocation();
     }
 
     private void beginPanningToCurrentLocation() {
@@ -260,6 +254,16 @@ public class MainActivity extends MapActivity {
         buttonStopMonitoring.setVisibility(enabledAlarm ? View.VISIBLE : View.GONE);
     }
 
+    private void moveToRecentLocation() {
+        Location lastLocation = LocationUtil.fromString(
+        		pref.getString(R.string.pref_last_location_key, ""));
+        if (lastLocation != null && pref.getBoolean(R.string.pref_alarm_enabled_key, false)) {
+        	updateCurrentLocation(lastLocation);
+        } else {
+        	beginPanningToCurrentLocation();
+        }
+    }
+
     @Override
     protected boolean isRouteDisplayed() {
         return false;
@@ -287,13 +291,7 @@ public class MainActivity extends MapActivity {
             ret = super.onOptionsItemSelected(item);
             break;
         case MENU_ID_RECENT_LOCATION:
-            Location lastLocation = LocationUtil.fromString(
-            		pref.getString(R.string.pref_last_location_key, ""));
-            if (lastLocation != null) {
-            	updateCurrentLocation(lastLocation);
-            } else {
-            	beginPanningToCurrentLocation();
-            }
+        	moveToRecentLocation();
 
             ret = true;
             break;
@@ -336,6 +334,8 @@ public class MainActivity extends MapActivity {
     	// register Receiver
         registerReceiver(locationChangedReceiver,
         		new IntentFilter(Const.ACTION_HEXRINGAR_LOCATION_CHANGED));
+
+        moveToRecentLocation();
     }
 
     @Override
