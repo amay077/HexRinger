@@ -131,9 +131,6 @@ public class TwitterConfigPreference extends DialogPreference {
 
 				        	return twitter.getOAuthAccessToken();
 				        } catch (Exception e) {
-							Toast.makeText(TwitterConfigPreference.this.getContext(),
-									"Twitter の認証に失敗しました。\nユーザー名とパスワードを確認してください",
-									Toast.LENGTH_SHORT).show();
 				        	Log.w("TwitterConfigPreference", "Twitter xAuth failed.", e);
 				        }
 
@@ -154,6 +151,10 @@ public class TwitterConfigPreference extends DialogPreference {
 
 							Toast.makeText(TwitterConfigPreference.this.getContext(),
 									"Twitter に接続しました！",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Toast.makeText(TwitterConfigPreference.this.getContext(),
+									"Twitter の認証に失敗しました。\nユーザー名とパスワードを確認してください",
 									Toast.LENGTH_SHORT).show();
 						}
 					}
