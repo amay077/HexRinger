@@ -65,8 +65,8 @@ public class Const {
 			//intentの設定
 			PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notifyIntent, 0);
 			notification.setLatestEventInfo(context.getApplicationContext(),
-					"HexRinger", "次回は " + new SimpleDateFormat("HH:mm:ss").format(cal.getTime()) + " に確認します", contentIntent);
-			notification.flags = Notification.FLAG_AUTO_CANCEL;
+					"HexRinger", "次回は " + new SimpleDateFormat("H時mm分ss秒").format(cal.getTime()) + " に確認します", contentIntent);
+			//notification.flags = Notification.FLAG_AUTO_CANCEL;
 			notificationManager.notify(R.string.app_name, notification);
 
 			Log.d("Const", "setNextAlarm Alarm set at " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime()));
