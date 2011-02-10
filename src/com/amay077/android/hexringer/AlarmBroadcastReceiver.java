@@ -94,7 +94,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			writeLastHexToPreference(enterHex);
 			Log.d(this.getClass().getSimpleName(), "onEnter() set ringermode normal.");
 
-			tweet("マナーモードを OFF にしました。 hex:" + enterHex + ". accuracy:"
+			tweet("マナーモードを勝手に OFF にしました。 hex:" + enterHex + ". accuracy:"
 					+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
 
 		} catch (Exception e) {
@@ -141,7 +141,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		writeLastHexToPreference(null);
 		Log.d(this.getClass().getSimpleName(), "onLeave() set ringermode manner.");
 
-		tweet("マナーモードを ON にしました。 hex:" + leaveHex + ". accuracy:"
+		tweet("マナーモードを勝手に ON にしました。 hex:" + leaveHex + ". accuracy:"
 				+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
 	}
 
