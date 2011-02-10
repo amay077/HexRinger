@@ -13,7 +13,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Paint.Style;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.amay077.android.logging.Log;
 import com.google.android.maps.GeoPoint;
@@ -31,7 +34,7 @@ import com.google.android.maps.Projection;
  *
  * @author h_okuyama
  */
-public class GeoHexOverlay extends Overlay {
+public class GeoHexOverlay extends Overlay implements OnGestureListener {
 
 	public interface OnTapHexListener {
 		void onTap(GeoHexOverlay sender, String hexCode);
@@ -39,6 +42,8 @@ public class GeoHexOverlay extends Overlay {
 
 	// fields -----------------------------------------------------------------
 	final private int MIN_ZOOMLEVEL = 2;
+
+	private GestureDetector gestureDetector = null;
 
 	/** GeoHex の描画スタイル */
 	private Paint hexPaint = new Paint();
@@ -51,6 +56,8 @@ public class GeoHexOverlay extends Overlay {
 
 	/** 選択時の GeoHex のレベル(今は GoogleMap の ZoomLV と連動) */
 	private int geoHexLevel;
+
+	private MapView lastTouchMapView = null;
 
 	private OnTapHexListener onTapHexListener = null;
 
@@ -73,6 +80,8 @@ public class GeoHexOverlay extends Overlay {
 		selectionPaint.setColor(Color.argb(64, 128, 0, 0));
 		selectionPaint.setStrokeWidth(2f);
 		selectionPaint.setAntiAlias(true);
+
+		gestureDetector = new GestureDetector(this);
 	}
 
 	// setter/getter ----------------------------------------------------------
@@ -130,41 +139,14 @@ public class GeoHexOverlay extends Overlay {
 		Log.d(this.getClass().getSimpleName(), "onTouchEvent() DownTime:" + String.valueOf(e.getDownTime()));
 		Log.d(this.getClass().getSimpleName(), "onTouchEvent() EventTime:" + String.valueOf(e.getEventTime()));
 
+		lastTouchMapView = mapView;
+		gestureDetector.onTouchEvent(e);
+
 		return super.onTouchEvent(e, mapView);
 	}
 
-	/** GeoHex の選択 or 選択解除 */
-	@Override
-	public boolean onTap(GeoPoint p, MapView mapView) {
-		Log.d(this.getClass().getSimpleName(), "onTap() called.");
-
-		// 世界地図だと 0 度またぎの対応が面倒なので、Level3 くらいまでの対応にする
-		if (mapView.getZoomLevel() <= MIN_ZOOMLEVEL) { return false; }
-
-		// タップ位置の GeoHex を得る
-		Zone zone = GeoHex.getZoneByLocation(p.getLatitudeE6() / 1E6, p.getLongitudeE6() / 1E6, geoHexLevel);
-		if (zone == null) { return false; }
-
-		if (onTapHexListener != null) {
-			onTapHexListener.onTap(this, zone.code);
-		}
-
-//		// 選択 or 選択解除
-//		getSelectedGeoHexCodes().clear();
-//		if (getSelectedGeoHexCodes().contains(zone.code)) {
-//			getSelectedGeoHexCodes().remove(zone.code);
-//		} else {
-//			getSelectedGeoHexCodes().add(zone.code);
-//		}
-//
-//		// 再描画
-//		mapView.invalidate();
-
-		return super.onTap(p, mapView);
-	}
 
 	// public methods ---------------------------------------------------------
-
 
 	// private methods --------------------------------------------------------
 	/** 指定した GeoHex を構成する画面座標値を得ます。(最後を閉じるので7点の座標値) */
@@ -211,5 +193,46 @@ public class GeoHexOverlay extends Overlay {
 		float heightInMetre = (float)(mapView.getLatitudeSpan() / 1E6) * 111136f;
 		return heightInMetre;
 
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e) { return false; }
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) { return false; }
+
+	@Override
+	public void onLongPress(MotionEvent e) { }
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) { return false; }
+
+	@Override
+	public void onShowPress(MotionEvent e) { }
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		Log.d(this.getClass().getSimpleName(), "onSingleTapUp");
+
+		if (lastTouchMapView == null) {
+			return false;
+		}
+
+		// 世界地図だと 0 度またぎの対応が面倒なので、Level3 くらいまでの対応にする
+		if (lastTouchMapView.getZoomLevel() <= MIN_ZOOMLEVEL) { return false; }
+
+		GeoPoint p = lastTouchMapView.getProjection().fromPixels((int)e.getX(), (int)e.getY());
+
+		// タップ位置の GeoHex を得る
+		Zone zone = GeoHex.getZoneByLocation(p.getLatitudeE6() / 1E6, p.getLongitudeE6() / 1E6, geoHexLevel);
+		if (zone == null) { return false; }
+
+		if (onTapHexListener != null) {
+			onTapHexListener.onTap(this, zone.code);
+		}
+
+		return false;
 	}
 }
