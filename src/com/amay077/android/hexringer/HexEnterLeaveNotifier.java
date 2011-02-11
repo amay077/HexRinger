@@ -76,6 +76,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			if (StringUtil.isNullOrEmpty(lastHex)) {
 				if (StringUtil.isNullOrEmpty(hitHex)) {
 					// Out to out. Do nothing.
+					Log.d(this.getClass().getSimpleName(), "onLocationChanged() location still outside of hex:" + hitHex);
 				} else {
 					// Out to in. Enter.
 					enterHex(hitHex, location);
@@ -83,7 +84,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 			} else {
 				if (lastHex.equals(hitHex)) {
 					// In to in. Do nothing.
-					Log.d(this.getClass().getSimpleName(), "onLocationChanged() still in hex:" + hitHex);
+					Log.d(this.getClass().getSimpleName(), "onLocationChanged() location still inside of hex:" + hitHex);
 				} else if (StringUtil.isNullOrEmpty(hitHex)) {
 					// In to out. Leave.
 					leaveHex(lastHex, location);
