@@ -91,8 +91,7 @@ public class MainActivity extends MapActivity {
 				pref.saveBoolean(R.string.pref_alarm_enabled_key, true);
 
 				Const.setNextAlarm(MainActivity.this,
-						pref.getAsInt(R.string.pref_watchinterval_key,
-								getString(R.string.pref_watchinterval_default)));
+						0, false); // 初回はすぐに開始
 				toggleMonitoringButton(pref.getBoolean(R.string.pref_alarm_enabled_key, false));
 
 				Toast.makeText(MainActivity.this,

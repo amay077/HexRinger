@@ -63,7 +63,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	        	// Set Alarm to AlarmManager on boot
 	        	// TODO: Need configuration
 				Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
-						context.getString(R.string.pref_watchinterval_default)));
+						context.getString(R.string.pref_watchinterval_default)), true);
 	        } else {
 	        	Log.w(this.getClass().getSimpleName(), "onReceive() " + "not support intent action:" + action);
 	        }
@@ -72,7 +72,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		} finally {
 			// Set next Alarm to AlarmManager
 			Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
-					context.getString(R.string.pref_watchinterval_default)));
+					context.getString(R.string.pref_watchinterval_default)), true);
 			setResult(Activity.RESULT_OK, null, null);
 		}
 	}
