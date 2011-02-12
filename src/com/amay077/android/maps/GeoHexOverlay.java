@@ -16,8 +16,6 @@ import android.graphics.Paint.Style;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
-import android.widget.Toast;
-
 import com.amay077.android.logging.Log;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -32,7 +30,6 @@ import com.google.android.maps.Projection;
  * タップで選択/選択解除ができます。
  * 選択された GeoHex(のコード)群は、getSelectedGeoHexCodes() で得られます。
  *
- * @author h_okuyama
  */
 public class GeoHexOverlay extends Overlay implements OnGestureListener {
 
