@@ -6,6 +6,8 @@
  * [意外に簡単なTwitterのxAuth認証の申請方法](http://lostlinksearch.net/blog/2011/01/%E6%84%8F%E5%A4%96%E3%81%AB%E7%B0%A1%E5%8D%98%E3%81%AAtwitter%E3%81%AExauth%E8%AA%8D%E8%A8%BC%E3%81%AE%E7%94%B3%E8%AB%8B%E6%96%B9%E6%B3%95/) - Lost Link Search 開発日誌
  * [Inkscape で、球体のような、立体的球面を描く方法](http://alphasis.info/2010/11/inkscape-ball/) - アルファシス – alphasis.info -
  * [レシーバおぼえがき(BroadcastReceiver)](http://www.jp-z.jp/changelog/2011-02-06-1.html) - 戯術者の日記
+ * [50 Free Android Menu Icons](http://www.androidicons.com/)
+ * [Android Icon Generator](http://www.androidicongenerator.net/)
 
 # LICENSE
 
