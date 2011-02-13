@@ -68,6 +68,7 @@ public class HexEnterLeaveNotifier extends TimeoutableLocationListener {
 
 			writeLastLocationToPreference(location);
 			sendLocationChangedBroadcastIntent(location);
+			Const.showNotify(context, false);
 
 			// Get hit hexes in current location and accuracy, order by nearby
 			GeoHex.Zone[] hitHexes = getIntersectGeoHexes(notifyHexes, location);
