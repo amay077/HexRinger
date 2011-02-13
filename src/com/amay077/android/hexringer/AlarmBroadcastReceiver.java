@@ -35,6 +35,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		boolean needContinue = true;
 		try {
 			Log.d(this.getClass().getSimpleName(), "onReceive() called.");
 
@@ -49,6 +50,15 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			String[] watchHexes = StringUtil.toArray(buf, Const.ARRAY_SPLITTER);
 			if (watchHexes == null || watchHexes.length == 0){
 	        	Log.w(this.getClass().getSimpleName(), "onReceive() watch hexes not set.");
+	        	pref.remove(R.string.pref_alarm_enabled_key);
+	        	needContinue = false;
+	        	return;
+			}
+
+			if (!pref.getBoolean(R.string.pref_alarm_enabled_key, false)) {
+	        	Log.d(this.getClass().getSimpleName(), "onReceive() disabled alarm.");
+	        	pref.remove(R.string.pref_alarm_enabled_key);
+	        	needContinue = false;
 	        	return;
 			}
 
@@ -61,18 +71,25 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 	        } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) { // booted phone.
 	        	// Set Alarm to AlarmManager on boot
-	        	// TODO: Need configuration
-				Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
-						context.getString(R.string.pref_watchinterval_default)), true);
+				if (!pref.getBoolean(R.string.pref_start_at_boot_key, false)) {
+		        	Log.d(this.getClass().getSimpleName(), "onReceive() disabled start at boot.");
+		        	pref.remove(R.string.pref_alarm_enabled_key);
+		        	needContinue = false;
+		        	return;
+				}
+
+				Const.setNextAlarm(context, 0, true);
 	        } else {
 	        	Log.w(this.getClass().getSimpleName(), "onReceive() " + "not support intent action:" + action);
 	        }
 		} catch (Exception exp) {
 			Log.w(this.getClass().getSimpleName(), "onReceive() failed.", exp);
 		} finally {
-			// Set next Alarm to AlarmManager
-			Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
-					context.getString(R.string.pref_watchinterval_default)), true);
+			if (needContinue) {
+				// Set next Alarm to AlarmManager
+				Const.setNextAlarm(context, pref.getAsInt(R.string.pref_watchinterval_key,
+						context.getString(R.string.pref_watchinterval_default)), true);
+			}
 			setResult(Activity.RESULT_OK, null, null);
 		}
 	}

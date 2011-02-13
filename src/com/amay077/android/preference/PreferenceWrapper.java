@@ -37,6 +37,10 @@ public class PreferenceWrapper {
 		return pref.getInt(res.getString(resID), defaultValue);
 	}
 
+	public long getLong(int resID, long defaultValue) {
+		return pref.getLong(res.getString(resID), defaultValue);
+	}
+
 	public void saveString(int resID, String saveValue) {
 		Editor editor = pref.edit();
 		editor.putString(res.getString(resID), saveValue);
@@ -46,6 +50,18 @@ public class PreferenceWrapper {
 	public void saveBoolean(int resID, boolean saveValue) {
 		Editor editor = pref.edit();
 		editor.putBoolean(res.getString(resID), saveValue);
+		editor.commit();
+	}
+
+	public void saveLong(int resID, long saveValue) {
+		Editor editor = pref.edit();
+		editor.putLong(res.getString(resID), saveValue);
+		editor.commit();
+	}
+
+	public void saveInt(int resID, int saveValue) {
+		Editor editor = pref.edit();
+		editor.putInt(res.getString(resID), saveValue);
 		editor.commit();
 	}
 
