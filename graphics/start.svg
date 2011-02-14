@@ -15,7 +15,10 @@
    id="svg4690"
    version="1.1"
    inkscape:version="0.48.0 r9654"
-   sodipodi:docname="新規ドキュメント 4">
+   sodipodi:docname="start.svg"
+   inkscape:export-filename="C:\dev\src\workspace\HexRinger\res\drawable-ldpi\start.png"
+   inkscape:export-xdpi="21.6"
+   inkscape:export-ydpi="21.6">
   <defs
      id="defs4692">
     <linearGradient
@@ -47,9 +50,9 @@
        xlink:href="#linearGradient5222"
        id="linearGradient5230"
        x1="72.5"
-       y1="50"
+       y1="35"
        x2="72.5"
-       y2="72.5"
+       y2="60"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
@@ -76,11 +79,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="35.579284"
-     inkscape:cy="55.285119"
+     inkscape:zoom="2.8"
+     inkscape:cx="47.794744"
+     inkscape:cy="64.359056"
      inkscape:document-units="px"
-     inkscape:current-layer="g5244"
+     inkscape:current-layer="layer3"
      showgrid="true"
      inkscape:window-width="1024"
      inkscape:window-height="706"
@@ -176,5 +179,21 @@
        id="path5220"
        style="fill:url(#linearGradient5230);fill-opacity:1;fill-rule:nonzero;stroke:none"
        sodipodi:type="arc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="edge"
+     style="display:inline">
+    <path
+       sodipodi:type="arc"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;display:inline;stroke-opacity:1;stroke-width:1.50000000000000000;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path4700-1"
+       sodipodi:cx="72.5"
+       sodipodi:cy="72.5"
+       sodipodi:rx="22.5"
+       sodipodi:ry="22.5"
+       d="m 95,72.5 a 22.5,22.5 0 1 1 -45,0 22.5,22.5 0 1 1 45,0 z"
+       transform="matrix(2,0,0,2,-94.999996,-95)" />
   </g>
 </svg>
