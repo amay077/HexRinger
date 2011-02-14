@@ -1,6 +1,5 @@
 package com.amay077.android.hexringer;
 
-import twitter4j.GeoLocation;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
@@ -111,8 +110,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 			writeLastHexToPreference(enterHex);
 			Log.d(this.getClass().getSimpleName(), "onEnter() set ringermode normal.");
 
-			tweet("マナーモードを勝手に OFF にしました。 hex:" + enterHex + ". accuracy:"
-					+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
+//			tweet("マナーモードを勝手に OFF にしました。 hex:" + enterHex + ". accuracy:"
+//					+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
+			tweet("マナーモードを勝手に OFF にしました。 #HexRinger", location);
 
 		} catch (Exception e) {
 			Log.e(this.getClass().getSimpleName(), "onEnter() failed.", e);
@@ -136,7 +136,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		        Twitter twitter = twitterfactory.getOAuthAuthorizedInstance(
 		        		new AccessToken(info.consumerToken, info.consumerSecret));
 
-		        twitter.updateStatus(message, new GeoLocation(location.getLatitude(), location.getLongitude()));
+//		        twitter.updateStatus(message, new GeoLocation(location.getLatitude(), location.getLongitude()));
+		        twitter.updateStatus(message);
 				Log.d(this.getClass().getSimpleName(), "tweet() succeeded.");
 				return;
 			} catch (Exception e) {
@@ -158,8 +159,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 		writeLastHexToPreference(null);
 		Log.d(this.getClass().getSimpleName(), "onLeave() set ringermode manner.");
 
-		tweet("マナーモードを勝手に ON にしました。 hex:" + leaveHex + ". accuracy:"
-				+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
+//		tweet("マナーモードを勝手に ON にしました。 hex:" + leaveHex + ". accuracy:"
+//				+ String.valueOf(location.getAccuracy()) + " #HexRinger", location);
+		tweet("マナーモードを勝手に ON にしました。 #HexRinger", location);
 	}
 
 	private void writeLastHexToPreference(String hitHex) {
