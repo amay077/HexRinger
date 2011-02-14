@@ -34,7 +34,7 @@
 				android:drawableLeft="@drawable/start"
 				android:drawablePadding="0sp"
 				android:text="START"
-				android:textSize="30sp"
+				android:textSize="24sp"
 				/>
 			<Button
 				android:id="@+id/ButtonStopMonitoring"
@@ -44,7 +44,7 @@
 				android:drawableLeft="@drawable/stop"
 				android:drawablePadding="0sp"
 				android:text="STOP"
-				android:textSize="30sp"
+				android:textSize="24sp"
 				/>
 	</LinearLayout>
 </LinearLayout>
