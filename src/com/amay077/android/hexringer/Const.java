@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.amay077.android.hexringer.AlarmBroadcastReceiver.LocationUtil;
 import com.amay077.android.logging.Log;
 import com.amay077.android.preference.PreferenceWrapper;
 
@@ -14,7 +13,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 
 public class Const {
 	// Intent Action
@@ -112,9 +110,9 @@ public class Const {
 			}
 
 			SimpleDateFormat dtfmt = new SimpleDateFormat("H時mm分ss秒");
-			String lastLocaString = pref.getString(R.string.pref_last_location_key, "");
-			Location lastLocation = LocationUtil.fromString(lastLocaString);
-			String prev = lastLocation != null ? dtfmt.format(lastLocation.getTime()) + " に位置を確認しました。\r\n" : "";
+//			String lastLocaString = pref.getString(R.string.pref_last_location_key, "");
+//			Location lastLocation = LocationUtil.fromString(lastLocaString);
+			String prev = "";//lastLocation != null ? dtfmt.format(lastLocation.getTime()) + " に位置を確認しました。<br/>" : "";
 
 			NotificationManager notificationManager =
 				(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
