@@ -1,5 +1,6 @@
 package com.amay077.android.hexringer;
 
+import java.text.SimpleDateFormat;
 import java.util.Set;
 
 import net.geohex.GeoHex;
@@ -21,6 +22,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -54,6 +57,7 @@ public class MainActivity extends MapActivity {
 					loc.setLatitude(intent.getDoubleExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LAT, 0d));
 					loc.setLongitude(intent.getDoubleExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_LONG, 0d));
 					loc.setAccuracy(intent.getFloatExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_ACCURACY, 0f));
+					loc.setTime(intent.getLongExtra(Const.ACTION_HEXRINGAR_LOCATION_CHANGED_EXTRA_TIME, 0));
 
 					updateCurrentLocation(loc);
 				}
@@ -177,11 +181,14 @@ public class MainActivity extends MapActivity {
         Log.writeApplicationInfo(this);
         Log.d(this.getClass().getSimpleName(), "onCreate called.");
 
+
         initializeUI();
 
         currentLocOverlay = new CurrentLocationOverlay(
         		getResources().getDrawable(R.drawable.currentlocation));
         watchHexOverlay.setOnTapHexListener(onTapHexListener);
+        watchHexOverlay.setBitmap(
+        		BitmapFactory.decodeResource(getResources(), R.drawable.ringer_map));
 
         mapview.getOverlays().add(watchHexOverlay);
         mapview.getOverlays().add(currentLocOverlay);
@@ -242,6 +249,8 @@ public class MainActivity extends MapActivity {
 				|| loc.getLongitude() == 0 || loc.getAccuracy() == 0) {
 			return;
 		}
+
+		setTitle("HexRinger (最終位置確認:" + new SimpleDateFormat("H時mm分").format(loc.getTime()) + ")");
 
 		currentLocOverlay.setCurrentLocation(loc);
 		MapController controller = mapview.getController();

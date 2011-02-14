@@ -7,6 +7,7 @@ import java.util.Set;
 import net.geohex.GeoHex;
 import net.geohex.GeoHex.Loc;
 import net.geohex.GeoHex.Zone;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -47,6 +48,9 @@ public class GeoHexOverlay extends Overlay implements OnGestureListener {
 
 	/** 選択した GeoHex の描画スタイル */
 	private Paint selectionPaint = new Paint();
+
+	private Paint imagePaint = new Paint();
+	private Bitmap bmpRinger = null;
 
 	/** 選択した GeoHex の Code 群 */
 	private Set<String> selectedGeoHexCodes = new HashSet<String>();
@@ -127,6 +131,14 @@ public class GeoHexOverlay extends Overlay implements OnGestureListener {
 			Zone z = GeoHex.getZoneByCode(code);
 			points = getGeoHexZonePoints(z, proj);
 			drawPolyline(canvas, points, selectionPaint);
+
+			if (bmpRinger != null) {
+				Point p = new Point();
+				proj.toPixels(new GeoPoint((int)(z.lat * 1E6), (int)(z.lon * 1E6)), p);
+				canvas.drawBitmap(bmpRinger,
+						p.x - (bmpRinger.getWidth() / 2),
+						p.y - (bmpRinger.getHeight() / 2), imagePaint);
+			}
 		}
 	}
 
@@ -231,5 +243,9 @@ public class GeoHexOverlay extends Overlay implements OnGestureListener {
 		}
 
 		return false;
+	}
+
+	public void setBitmap(Bitmap bitmap) {
+		bmpRinger = bitmap;
 	}
 }
