@@ -109,7 +109,7 @@ public class Const {
 				return;
 			}
 
-			SimpleDateFormat dtfmt = new SimpleDateFormat("H時mm分ss秒");
+			SimpleDateFormat dtfmt = new SimpleDateFormat("H時mm分");
 //			String lastLocaString = pref.getString(R.string.pref_last_location_key, "");
 //			Location lastLocation = LocationUtil.fromString(lastLocaString);
 			String prev = "";//lastLocation != null ? dtfmt.format(lastLocation.getTime()) + " に位置を確認しました。<br/>" : "";
