@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string-array name="pref_watchinterval_entries">
-  <item>1分</item>
   <item>5分</item>
   <item>10分</item>
+  <item>15分</item>
   <item>30分</item>
   <item>1時間</item>
   <item>2時間</item>
 </string-array>
 <string-array name="pref_watchinterval_entryvalues">
-  <item>1</item>
   <item>5</item>
   <item>10</item>
+  <item>15</item>
   <item>30</item>
   <item>60</item>
   <item>120</item>

@@ -12,8 +12,8 @@
     <string name="pref_twitter_key">PREF_TWITTER</string>
     <string name="pref_version_title">バージョン</string>
     <string name="pref_version_key">PREF_VERSION</string>
-    <string name="pref_licence_summary">ライセンス情報を表示します。</string>
-    <string name="pref_licence_value">ライセンス情報</string>
+    <string name="pref_licence_summary">このアプリの使い方やライセンス情報など</string>
+    <string name="pref_licence_value">HexRinger について</string>
     <string name="pref_licence_key">PREF_LICENCE</string>
     <string name="pref_category_outline">概要</string>
     <string name="pref_category_general">一般設定</string>
