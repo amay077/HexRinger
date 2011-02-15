@@ -226,6 +226,7 @@ public class MainActivity extends MapActivity {
 				public void onLocationChanged(Location location) {
 					super.onLocationChanged(location);
 					updateCurrentLocation(location);
+					pref.saveString(R.string.pref_last_location_key, LocationUtil.toString(location));
 				}
 			}
 		);
@@ -267,6 +268,7 @@ public class MainActivity extends MapActivity {
         if (lastLocation != null && pref.getBoolean(R.string.pref_alarm_enabled_key, false)) {
         	updateCurrentLocation(lastLocation);
         } else {
+        	if (lastLocation == null) { mapview.getController().setZoom(14); }
         	beginPanningToCurrentLocation();
         }
     }
