@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.widget.Toast;
 
 /** Broadcast Receiver */
 public class AlarmBroadcastReceiver extends BroadcastReceiver
