@@ -6,7 +6,7 @@
     <string name="ui_twitter_unauth_button_text">切断</string>
     <string name="ui_twitter_cancel_button_text">キャンセル</string>
     <string name="ui_twitter_authorized_text">接続済み</string>
-    <string name="ui_twitter_description_text">Twitter と接続すると、マナーモードを変更した際に、 Twitter に通知します。※位置情報は通知されません。</string>
+    <string name="ui_twitter_description_text">接続すると、マナーモードを ON/OFF した際に Twitter に通知します。※位置情報は通知されません。</string>
 
     <string name="pref_twitter_title">Twitter 連携</string>
     <string name="pref_twitter_key">PREF_TWITTER</string>
@@ -32,6 +32,7 @@
     <string name="pref_mannermode_type_key">PREF_MANNERMODE_TYPE</string>
     <string name="pref_mannermode_type_default">0</string>
 
+    <string name="pref_about_url">http://hexringer.posterous.com/hexringer-0</string>
 
     <string name="pref_alarm_enabled_key">PREF_ALARM_ENABLED</string>
 

@@ -30,30 +30,30 @@ public class Log {
 			return;
 		}
 
-		File sdCardDir = Environment.getExternalStorageDirectory();
-		Uri logUri = Uri.withAppendedPath(Uri.fromFile(sdCardDir), LOGFILE_PATH);
-		String logFullPath = logUri.getPath();
-
-		File logDir = new File(logFullPath).getParentFile();
-		if (!logDir.exists()) {
-			logDir.mkdir();
-		}
-
-		// Formatter
-		PatternFormatter formatter = new PatternFormatter();
-		formatter.setPattern("%d{ISO8601} [%P] %m %T");
-
-		// LogCatAppender
-		LogCatAppender logCatAppender = new LogCatAppender();
-		logCatAppender.setFormatter(formatter);
-		logger.addAppender(logCatAppender);
-
-		// FileAppender
-		FileAppender fileAppender = new FileAppender();
-		fileAppender.setFileName(LOGFILE_PATH);
-		fileAppender.setAppend(true);
-		fileAppender.setFormatter(formatter);
-		logger.addAppender(fileAppender);
+//		File sdCardDir = Environment.getExternalStorageDirectory();
+//		Uri logUri = Uri.withAppendedPath(Uri.fromFile(sdCardDir), LOGFILE_PATH);
+//		String logFullPath = logUri.getPath();
+//
+//		File logDir = new File(logFullPath).getParentFile();
+//		if (!logDir.exists()) {
+//			logDir.mkdir();
+//		}
+//
+//		// Formatter
+//		PatternFormatter formatter = new PatternFormatter();
+//		formatter.setPattern("%d{ISO8601} [%P] %m %T");
+//
+//		// LogCatAppender
+//		LogCatAppender logCatAppender = new LogCatAppender();
+//		logCatAppender.setFormatter(formatter);
+//		logger.addAppender(logCatAppender);
+//
+//		// FileAppender
+//		FileAppender fileAppender = new FileAppender();
+//		fileAppender.setFileName(LOGFILE_PATH);
+//		fileAppender.setAppend(true);
+//		fileAppender.setFormatter(formatter);
+//		logger.addAppender(fileAppender);
 
 		isInitialized = true;
 	}
