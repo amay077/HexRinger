@@ -24,7 +24,14 @@
     android:key="@string/pref_twitter_key"
     android:title="@string/pref_twitter_title"/>
 </PreferenceCategory>
-<PreferenceCategory android:title="@string/pref_category_outline"><Preference android:key="@string/pref_licence_key" android:title="@string/pref_licence_value" android:summary="@string/pref_licence_summary"></Preference>
-<com.amay077.android.preference.VersionPreference android:key="@string/pref_version_key" android:enabled="false" android:title="@string/pref_version_title"></com.amay077.android.preference.VersionPreference>
+<PreferenceCategory android:title="@string/pref_category_outline">
+  <com.amay077.android.preference.AboutPreference
+    android:key="@string/pref_licence_key"
+    android:title="@string/pref_licence_value"
+    android:summary="@string/pref_licence_summary"/>
+  <com.amay077.android.preference.VersionPreference
+    android:key="@string/pref_version_key"
+    android:enabled="false"
+    android:title="@string/pref_version_title"/>
 </PreferenceCategory>
 </PreferenceScreen>
