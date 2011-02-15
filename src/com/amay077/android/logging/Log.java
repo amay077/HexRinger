@@ -23,42 +23,45 @@ public class Log {
 	static private String LOGFILE_PATH = "/HexRinger/log"
 		+ DateFormat.format("yyyyMMdd", System.currentTimeMillis()) + ".txt";
 	static private boolean isInitialized = false;
+	static private boolean logEnabled = false;
 
 	static private void initialize() {
+		if (!logEnabled) { return; }
 
 		if (isInitialized) {
 			return;
 		}
 
-//		File sdCardDir = Environment.getExternalStorageDirectory();
-//		Uri logUri = Uri.withAppendedPath(Uri.fromFile(sdCardDir), LOGFILE_PATH);
-//		String logFullPath = logUri.getPath();
-//
-//		File logDir = new File(logFullPath).getParentFile();
-//		if (!logDir.exists()) {
-//			logDir.mkdir();
-//		}
-//
-//		// Formatter
-//		PatternFormatter formatter = new PatternFormatter();
-//		formatter.setPattern("%d{ISO8601} [%P] %m %T");
-//
-//		// LogCatAppender
-//		LogCatAppender logCatAppender = new LogCatAppender();
-//		logCatAppender.setFormatter(formatter);
-//		logger.addAppender(logCatAppender);
-//
-//		// FileAppender
-//		FileAppender fileAppender = new FileAppender();
-//		fileAppender.setFileName(LOGFILE_PATH);
-//		fileAppender.setAppend(true);
-//		fileAppender.setFormatter(formatter);
-//		logger.addAppender(fileAppender);
+		File sdCardDir = Environment.getExternalStorageDirectory();
+		Uri logUri = Uri.withAppendedPath(Uri.fromFile(sdCardDir), LOGFILE_PATH);
+		String logFullPath = logUri.getPath();
+
+		File logDir = new File(logFullPath).getParentFile();
+		if (!logDir.exists()) {
+			logDir.mkdir();
+		}
+
+		// Formatter
+		PatternFormatter formatter = new PatternFormatter();
+		formatter.setPattern("%d{ISO8601} [%P] %m %T");
+
+		// LogCatAppender
+		LogCatAppender logCatAppender = new LogCatAppender();
+		logCatAppender.setFormatter(formatter);
+		logger.addAppender(logCatAppender);
+
+		// FileAppender
+		FileAppender fileAppender = new FileAppender();
+		fileAppender.setFileName(LOGFILE_PATH);
+		fileAppender.setAppend(true);
+		fileAppender.setFormatter(formatter);
+		logger.addAppender(fileAppender);
 
 		isInitialized = true;
 	}
 
 	static public void writeApplicationInfo(Context context) {
+		if (!logEnabled) { return; }
     	initialize();
 		try {
 			PackageInfo pkgInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 1);
@@ -95,6 +98,7 @@ public class Log {
 
     public static int d(String tag, String msg)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.debug(format(tag, msg));
@@ -107,6 +111,7 @@ public class Log {
 
     public static int d(String tag, String msg, Throwable tr)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.debug(format(tag, msg), tr);
@@ -119,6 +124,7 @@ public class Log {
 
     public static int i(String tag, String msg)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.info(format(tag, msg));
@@ -131,6 +137,7 @@ public class Log {
 
     public static int i(String tag, String msg, Throwable tr)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.info(format(tag, msg), tr);
@@ -143,6 +150,7 @@ public class Log {
 
     public static int w(String tag, String msg)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.warn(format(tag, msg));
@@ -155,6 +163,7 @@ public class Log {
 
     public static int w(String tag, String msg, Throwable tr)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.warn(format(tag, msg), tr);
@@ -167,6 +176,7 @@ public class Log {
 
     public static int w(String tag, Throwable tr)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.warn(format(tag, ""), tr);
@@ -179,6 +189,7 @@ public class Log {
 
     public static int e(String tag, String msg)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
             logger.error(format(tag, msg));
@@ -191,6 +202,7 @@ public class Log {
 
     public static int e(String tag, String msg, Throwable tr)
     {
+		if (!logEnabled) { return 0; }
     	try {
         	initialize();
         	logger.error(format(tag, msg), tr);
