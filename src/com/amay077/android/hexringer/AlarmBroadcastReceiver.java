@@ -105,7 +105,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 	public void onEnter(String enterHex, Location location) {
 		try {
 			Log.d(this.getClass().getSimpleName(), "onEnter() " + enterHex);
-	    	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
+//	    	Toast.makeText(context, "AlarmBroadcastReceiver.onEnter:" + enterHex, Toast.LENGTH_SHORT).show();
 			audioMan.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 			writeLastHexToPreference(enterHex);
 			Log.d(this.getClass().getSimpleName(), "onEnter() set ringermode normal.");
@@ -153,7 +153,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver
 
 	public void onLeave(String leaveHex, Location location) {
 		Log.d(this.getClass().getSimpleName(), "onLeave() " + leaveHex);
-    	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
+//    	Toast.makeText(context, "AlarmBroadcastReceiver.onLeave:" + leaveHex, Toast.LENGTH_SHORT).show();
 		audioMan.setRingerMode(pref.getAsInt(R.string.pref_mannermode_type_key,
 				context.getString(R.string.pref_mannermode_type_default)));
 		writeLastHexToPreference(null);
