@@ -30,7 +30,7 @@ public class Const {
 
 
 	/** 初回測位までのタイムアウト時間（ミリ秒） */
-	static public final short LOCATION_REQUEST_TIMEOUT_MS = 30000;
+	static public final int LOCATION_REQUEST_TIMEOUT_MS = 60000;
 	/** 配列を文字列化する時の区切り文字 */
 	public static final String ARRAY_SPLITTER = ",";
 	/** WiFi 測位かどうかの精度の閾値（ｍ） */
