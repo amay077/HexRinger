@@ -10,9 +10,10 @@
 		android:layout_weight="1"
 		android:orientation="vertical"
 		>
+<!-- Release 		android:apiKey="0ZXUMl6hWC18qFlAw4y2cdBqVjbsAqAwNt-No5Q" -->
 		<com.google.android.maps.MapView
 			android:id="@+id/mapView"
-			android:apiKey="0ZXUMl6hWC18qFlAw4y2cdBqVjbsAqAwNt-No5Q"
+			android:apiKey="0ZXUMl6hWC185RvtFIeAGtMTuTlifQsorVLQrHA"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:clickable="true"
