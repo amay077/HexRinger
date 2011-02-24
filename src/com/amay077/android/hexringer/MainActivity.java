@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 
 /** HexRinger Main Activity */
+// comment test.
 public class MainActivity extends MapActivity {
     private static final int MENU_ID_RECENT_LOCATION = (Menu.FIRST + 1);
     private static final int MENU_ID_WATCH_HEXES = (Menu.FIRST + 2);
