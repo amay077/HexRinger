@@ -26,11 +26,6 @@ http://twitter.com/chshii
 JTS Topology Suite specification is licensed under LGPL
 by Vivid Solutions, Inc. http://www.vividsolutions.com/jts/JTSHome.htm
 
-## microlog4android
-microlog4android specification is licensed under Apache License 2.0
-by johan.karlsson.malmo Inc. http://code.google.com/p/microlog4android/
-”Default-Locale” Version implemented by @amay077 https://github.com/amay077/microlog4android
-
 ## Twitter4J
 Twitter4J specification is licensed under BSD License
 Copyright (c) 2007-2011, Yusuke Yamamoto 
@@ -46,6 +41,11 @@ modification, are permitted provided that the following conditions are met:
 
 THIS SOFTWARE IS PROVIDED BY Yusuke Yamamoto ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 IN NO EVENT SHALL Yusuke Yamamoto BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+## microlog4android
+microlog4android specification is licensed under Apache License 2.0
+by johan.karlsson.malmo Inc. http://code.google.com/p/microlog4android/
+”Default-Locale” Version implemented by @amay077 https://github.com/amay077/microlog4android
 
 ----
 Copyright (C) 2011 @amay077
