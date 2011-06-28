@@ -12,8 +12,10 @@
 # LICENSE
 
 ## HexRinger
-HexRinger implemented by @amay077<BR/>
+HexRinger implemented by @amay077
+
 http://twitter.com/amay077
+
 This code is followed geohex code license (CC-BY-SA)
 
 ## GeoHex
